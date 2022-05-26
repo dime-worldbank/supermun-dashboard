@@ -46,6 +46,9 @@ indicator_list <-
 
 names(indicator_list) <- indicators$title_french
 
+st_crs(communes) <- "4326"
+st_crs(regions) <- "4326"
+
 
 ic <- 
   indicators %>%
