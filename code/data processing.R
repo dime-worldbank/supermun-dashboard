@@ -15,6 +15,10 @@ regions <-
   st_as_sf() %>%
   transmute(
     region = NAME_1
+  ) %>%
+  st_simplify(
+    preserveTopology = TRUE, 
+    dTolerance = 1000
   )
 
 regions %>%
@@ -42,6 +46,26 @@ communes <-
     NAME_1,
     NAME_2,
     NAME_3
+  ) %>%
+  st_simplify(
+    preserveTopology = TRUE, 
+    dTolerance = 1000
+  )
+
+## Calculate information for map -----------------------------------------------
+
+panel %>%
+  filter(year == year) %>%
+  select(commune, region, all_of(indicator)) %>%
+  mutate(
+    n_country = get(indicator) %>% na.omit %>% length,
+    rank_country = rank(get(indicator)),
+    quintile = ntile(rank_country, 5)
+  ) %>%
+  group_by(region) %>%
+  mutate(
+    n_region = get(indicator) %>% na.omit %>% length,
+    rank_region = rank(get(indicator))
   )
 
 ## SUPERMUN data ---------------------------------------------------------------
@@ -78,6 +102,8 @@ communes <-
       starts_with("value"),
       contains("points")
     ) 
+
+
 
 communes %>%
   write_rds(
