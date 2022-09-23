@@ -4,6 +4,7 @@
 .Ruserdata
 *.rds
 *.csv
+!documentation/*.csv
 *.pdf
 *.xlsx
 *.dta
