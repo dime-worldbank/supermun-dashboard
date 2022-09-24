@@ -44,31 +44,17 @@ communes <-
   st_as_sf() %>%
   select(
     NAME_1,
-    NAME_2,
+    province = NAME_2,
     NAME_3
   ) %>%
   st_simplify(
     preserveTopology = TRUE, 
     dTolerance = 1000
-  )
-
-## Calculate information for map -----------------------------------------------
-
-panel %>%
-  filter(year == year) %>%
-  select(commune, region, all_of(indicator)) %>%
-  mutate(
-    n_country = get(indicator) %>% na.omit %>% length,
-    rank_country = rank(get(indicator)),
-    quintile = ntile(rank_country, 5)
   ) %>%
-  group_by(region) %>%
-  mutate(
-    n_region = get(indicator) %>% na.omit %>% length,
-    rank_region = rank(get(indicator))
-  )
+  left_join(join) %>%
+  select(-starts_with("NAME"))
 
-## SUPERMUN data ---------------------------------------------------------------
+# SUPERMUN data ---------------------------------------------------------------
 panel <-
   read_csv(
     here(
@@ -76,34 +62,43 @@ panel <-
       "raw",
       "SUPERMUN Panel.csv"
     )
+  ) %>%
+  select(-`...1`) 
+
+## Calculate information for map -----------------------------------------------
+
+panel_long <-
+  panel %>%
+  pivot_longer(
+    cols = 4:ncol(.),
+    names_to = "indicator"
+  ) %>%
+  group_by(year, indicator) %>%
+  mutate(
+    n_country = n_distinct(commune),
+    rank_country = rank(value),
+    quintile = ntile(rank_country, 5)
+  ) %>%
+  group_by(year, indicator, region) %>%
+  mutate(
+    n_region = n_distinct(commune),
+    rank_region = rank(value)
   )
 
 ## Correspondence between map and data on commune name -------------------------
 join <-
   read_csv(
     here(
-      "data",
-      "raw",
-      "map_name_matching.csv"
+      "documentation",
+      "Commune Concordance for Shape Files 2019-02-01.csv"
     ),
     locale = readr::locale(encoding = "latin1")
   )
 
 ## Combine all data ------------------------------------------------------------
 communes <-
-  communes %>%
-    left_join(join) %>%
-    left_join(panel) %>%
-    select(
-      region = NAME_1,
-      province = NAME_2,
-      commune = NAME_3,
-      year, 
-      starts_with("value"),
-      contains("points")
-    ) 
-
-
+  communes  %>%
+  left_join(panel)
 
 communes %>%
   write_rds(
@@ -119,9 +114,8 @@ communes %>%
 indicators <-
   read_csv(
     here(
-      "data",
-      "raw",
-      "indicator_list.csv"
+      "documentation",
+      "SUPERMUN Indicator List.csv"
     ),
     locale = readr::locale(encoding = "latin1")
   ) %>%
