@@ -43,18 +43,15 @@ ui <-
             inputId = "map_var",
             label = "Liste des indicateurs",
             choices = ic,
-            selected = NULL,
             direction = "vertical"
-          ),
+          )
           
-          uiOutput("map_def_h"),
-          p(textOutput("map_def"))
         ),
         
         mainPanel(
           plotlyOutput(
             "map",
-            height = "500px"
+            height = "800px"
           )
         )
       )

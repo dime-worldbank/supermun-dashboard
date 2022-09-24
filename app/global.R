@@ -19,13 +19,18 @@ library(htmltools)
 
 # Data ----------------------------------------------------------------------
 
+source("auxiliary/params.R")
+source("auxiliary/display_map.R")
+
+
 communes <-
   read_rds(
     file.path(
       "data",
       "communes.rds"
     )
-  )
+  ) %>%
+  st_as_sf
 
 
 regions <-
@@ -59,7 +64,7 @@ ic <-
   setNames(
     indicators %>% 
       filter(family == "ic") %>%
-      pull(button)
+      pull(title_french)
   )
 
 families <- 

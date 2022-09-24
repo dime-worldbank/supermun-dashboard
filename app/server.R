@@ -147,7 +147,7 @@
           setNames(
             indicators %>% 
               filter(family == input$map_groupe) %>%
-              pull(button)
+              pull(title_french)
           )
       ),
       
@@ -237,61 +237,19 @@
           ungroup %>%
           mutate(
             text = paste0(
-              "Commune de ", commune, "<br><br>",
-              "Province: ", province, "<br>",
-              "Région: ", region, "<br><br>",
-              title, " (", year, "): ",
+              "<b>Commune de ", commune, "</b><br><br>",
+              "<b>Province:</b> ", province, "<br>",
+              "<b>Région:</b> ", region, "<br><br>",
+              "<b>", title, " (", year, "): </b>",
               get(var) %>% round(1), " ",
-              unit, "<br>",
-              rank_country, "ème sur ", n_country, " communes de Burkina Faso <br>",
-              rank_region, "ème sur ", n_region, " communes de ", region
+              unit, "<br><br>",
+              "<b>",rank_country, "ème </b>sur ", n_country, " communes de Burkina Faso <br>",
+              "<b>",rank_region, "ème </b>sur ", n_region, " communes de ", region
             )
           )
         
-        
-        
-        static <-
-          ggplot() +
-          geom_sf(
-            data = data,
-            aes(
-              text = text,
-              fill = fill,
-              color = commune
-            )
-          ) +
-          labs(
-            fill = unit,
-            title = paste0(title, " (", input$map_year, ")")
-          ) +
-          theme_void() +
-          scale_fill_manual(
-            values = c(
-              "#FF6961",
-              "#FFB54C",
-              "#F8D66D",
-              "#8CD47E",
-              "#7ABD7E"
-            ),
-            na.value = "white"
-          )
-        
-        ggplotly(
-          static, 
-          tooltip = "text"
-        ) %>% 
-          style(
-            hoveron = "fill",
-            line.color = toRGB("gray40"),
-            traces = seq.int(2, 349)
-          ) %>%
-          hide_legend %>%
-          layout(
-            xaxis = list(
-              zerolinecolor  = "white"
-            )
-          )
-        
+        display_map(data, input$map_year, input$map_var, title) # Function defined in auxiliary/display_map.R
+
       })
     
 # Data -------------------------------------------------------------------------
