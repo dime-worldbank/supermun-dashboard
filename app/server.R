@@ -91,6 +91,21 @@
         line_plot(communes, input$profile_commune, selected_var())
         
       })
+  
+  output$plot_note <-
+    renderUI({
+      HTML(
+        str_wrap(
+          paste(
+            "<b>Définition:</b>",
+            indicators %>%
+              filter(Indicateur == selected_var()) %>%
+              pull(definition_french)
+          ),
+          note_chars
+        )
+      )
+    })
     
 ## Map -------------------------------------------------------------------------
     

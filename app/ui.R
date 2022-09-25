@@ -73,6 +73,7 @@ ui <-
         choices = communes %>% pull(commune) %>% unique,
         selected = "Banfora",
         width = "fit"
+          #htmlOutput("plot_note")
       ),
       
       plotlyOutput("line_plot"),
