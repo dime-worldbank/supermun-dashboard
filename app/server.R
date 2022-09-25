@@ -87,49 +87,9 @@
 
     output$line_plot <-
       renderPlotly({
+
+        line_plot(communes, input$profile_commune, selected_var())
         
-       unit <-
-          indicators %>%
-          filter(indicator == selected_var()) %>%
-          pull(unit_french)
-        
-        title <-
-          indicators %>%
-          filter(indicator == selected_var()) %>%
-          pull(title_french)
-        
-        static <-
-          communes %>%
-            st_drop_geometry %>%
-            filter(commune == "Banfora") %>%
-            ggplot(
-              aes_string(
-                x = "year",
-                y = selected_var()
-              )
-            ) +
-            geom_line(
-              color = "navy",
-              size = 1,
-            ) +
-            geom_point(
-              aes(
-                text = paste0(
-                  year,
-                  "<br>",
-                  round(get(selected_var()), 1),
-                  " ",
-                  unit
-                )
-              ),
-              color = "navy",
-              size = 3
-            ) +
-            theme_minimal() +
-            labs(y = unit, x = NULL) +
-          ggtitle(title)
-        
-        ggplotly(static, tooltip = "text")
       })
     
 ## Map -------------------------------------------------------------------------
