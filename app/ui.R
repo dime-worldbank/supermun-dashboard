@@ -69,15 +69,28 @@ ui <-
 
       pickerInput(
         inputId = "profile_commune",
-        label = tags$h1("Commune de "),
         choices = communes %>% pull(commune) %>% unique,
         selected = "Banfora",
-        width = "fit"
-          #htmlOutput("plot_note")
+        width = "100%",
+        options = list(style = "commune")
       ),
-      
-      plotlyOutput("line_plot"),
-          
+
+      fluidRow(
+        column(
+          width = 3,
+          fluidRow(infoBoxOutput("ic", width = 12)),
+          fluidRow(infoBoxOutput("sd", width = 12))
+        ),
+        column(
+          width = 9,
+          plotlyOutput(
+            "line_plot",
+            height = "250px"
+          )#,
+          #htmlOutput("plot_note")
+        )
+      ),
+
       bs4Card(
         width = 12,
         solidHeader = TRUE,
