@@ -4,6 +4,58 @@
     
 ## Commune profile -------------------------------------------------------------
     
+### Boxes ----------------------------------------------------------------------
+    output$ic <-
+      renderInfoBox({
+        
+        year_max <- 
+          communes %>%
+          filter(
+            commune == input$profile_commune,
+            !is.na(total_points_ic)
+          ) %>%
+          pull(year) %>%
+          max 
+        
+        bs4ValueBox(
+          value = 
+            communes %>%
+            filter(
+              commune == input$profile_commune,
+              year == year_max
+            ) %>%
+            pull(total_points_ic) %>%
+            round(1),
+          subtitle = paste("Capacité institutionelle\n(", year_max, ")"),
+          icon = icon("university", lib = "font-awesome")
+        )
+      })
+    
+    output$sd <-
+      renderInfoBox({
+        
+        year_max <- 
+          communes %>%
+          filter(
+            commune == input$profile_commune,
+            !is.na(total_points_sd)) %>%
+          pull(year) %>%
+          max
+        
+        bs4ValueBox(
+          communes %>%
+            filter(
+              commune == input$profile_commune,
+              year == year_max
+            ) %>%
+            pull(total_points_sd) %>%
+            round(1),
+          width = 12,
+          subtitle = paste("Services publics\n(", year_max, ")"),
+          icon = icon("hand-holding", lib = "font-awesome")
+        )
+      })
+    
 ### Institutional capacity table -----------------------------------------------
     
   output$table <-
@@ -73,9 +125,9 @@
       
       {
         if (is.null(input$table_rows_selected)) {
-          "total_points_ic"
+          "Capacité institutionnelle (Points)"
         } else {
-          indicators[input$table_rows_selected, "indicator"] %>% unlist %>% unname
+          data_table[input$table_rows_selected, "Indicateur"] %>% unlist %>% unname
         }
       },
       
