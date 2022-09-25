@@ -21,6 +21,7 @@ library(htmltools)
 
 source("auxiliary/params.R")
 source("auxiliary/display_map.R")
+source("auxiliary/line_plot.R")
 
 
 communes <-
@@ -38,6 +39,14 @@ regions <-
     file.path(
       "data",
       "regions.rds"
+    )
+  )
+
+data_table <-
+  read_rds(
+    file.path(
+      "data",
+      "data_table.rds"
     )
   )
 

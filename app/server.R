@@ -63,30 +63,11 @@
         
         table <-
           datatable(
-            communes %>%
-              st_drop_geometry %>%
-              filter(commune == input$profile_commune) %>%
-              select(
-                year,
-                starts_with("value")
+            data_table %>%
+              filter(
+                commune == input$profile_commune
               ) %>%
-              pivot_longer(
-                cols = starts_with("value"),
-                names_to = "indicator"
-              ) %>%
-              mutate(value = round(value, 1)) %>%
-              pivot_wider(
-                names_from = year
-              ) %>%
-              inner_join(
-                indicators
-              ) %>%
-              select(
-                `Groupe d'indicateur` = family_french,
-                Indicateur,
-                starts_with("20")
-              ),
-            
+              select(-commune),
             rownames = FALSE,
             options = 
               list(
