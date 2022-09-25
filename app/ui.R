@@ -13,6 +13,9 @@ ui <-
     header = tagList(
       useShinydashboard()
     ),
+    
+    tags$style(".commune {font-size: 36px; font-family: 'Source Sans Pro',sans-serif; margin-top: 20px;
+    margin-bottom: 10px; font-weight: 500; line-height: 1.1; background-color: '#FF6961';"),
 
     # Tab panel: home -----------------
     tabPanel(
