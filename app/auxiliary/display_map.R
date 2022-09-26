@@ -16,6 +16,7 @@ display_map <-
         data = data %>%
           filter(year == input_year),
         aes(
+          #color = commune,
           fill = label,
           text = text
         )
@@ -43,8 +44,9 @@ display_map <-
       static_map,
       tooltip = "text"
     ) %>%
+      #hide_legend %>%
       style(
-        hoveron = "fill",
+        #hoveron = "fill",
         line.color = toRGB("gray25"),
         traces = seq.int(2, 349)
       ) %>%
