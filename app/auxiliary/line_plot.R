@@ -16,10 +16,17 @@ line_plot <-
       filter(Indicateur == variable) %>%
       pull(title_french)
     
-    static_plot <-
+    data <-
       communes %>%
-      st_drop_geometry %>%
-      filter(commune == com) %>%
+      filter(commune == com)
+    
+    interval <-
+      data %>%
+      pull(year) %>%
+      unique
+    
+    static_plot <-
+      data %>%
       ggplot(
         aes_string(
           x = "year",
@@ -43,6 +50,7 @@ line_plot <-
         color = "navy",
         size = 3
       ) +
+      scale_x_discrete(limits = interval) +
       theme_minimal() +
       labs(y = unit, x = NULL) +
       ggtitle(title)
