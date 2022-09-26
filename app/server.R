@@ -224,44 +224,50 @@
         pull(total_points_ic)
     )
     
+  data <-
+   eventReactive(
+     c(input$data_commune, input$data_province, input$data_region, input$data_year, input$data_var),
+     {
+       names <-
+        indicators %>%
+        filter(indicator %in% input$data_var) %>%
+        pull(Indicateur)
+     
+       data <- 
+         communes %>%
+         st_drop_geometry() %>%
+         filter(
+           commune %in% input$data_commune,
+           province %in% input$data_province,
+           region %in% input$data_region,
+           year %in% as.numeric(input$data_year)
+         ) %>%
+         select(province, region, commune, year, all_of(input$data_var)) %>%
+         mutate(
+           across(
+             all_of(input$data_var),
+             ~ round(., 3)
+           )
+         )
+       
+        names(data) <-
+          c("Province", "Région", "Commune", "Année", names)
+       
+       data
+     }
+   )
+  
   output$data <-
       renderDataTable(
         {
-          
-          names <-
-            indicators %>%
-            filter(indicator %in% input$data_var) %>%
-            pull(title_french)
-          
-          data <- 
-            communes %>%
-            st_drop_geometry() %>%
-            filter(
-              commune %in% input$data_commune,
-              province %in% input$data_province,
-              region %in% input$data_region,
-              year %in% as.numeric(input$data_year)
-            ) %>%
-            select(province, region, commune, year, all_of(input$data_var)) %>%
-            mutate(
-              across(
-                all_of(input$data_var),
-                ~ round(., 3)
-              )
-            )
-            
-          names(data) <-
-            c("Province", "Région", "Commune", "Année", indicators$title_french)
-          
-          data
+          data()
         },
-        extensions = 'Buttons',
         filter = "top",
         selection = "multiple",
         escape = FALSE,
         options = list(
-          sDom  = '<"top">Bt<"bottom">ip',
-          pageLength = 10,
+          sDom  = '<"top">t<"bottom">ip',
+          pageLength = 15,
           autoWidth = TRUE,
           buttons = c('copy', 'csv', 'excel'),
           lengthMenu = c(10, 20, 50, 100),
@@ -271,6 +277,31 @@
         rownames = FALSE,
         server = FALSE
       )
+  
+  output$data_csv <-
+    downloadHandler(
+      filename = "supermun.csv",
+      
+      content = function(file) {
+        write_csv(
+          data(),
+          file
+        )
+      }
+    )
+  
+  output$data_xls <-
+    downloadHandler(
+      filename = "supermun.xlsx",
+      
+      content = function(file) {
+        write_xlsx(
+          data(),
+          file
+        )
+      }
+    )
+  
 # Indicators -------------------------------------------------------------------
   
   output$indicators <-

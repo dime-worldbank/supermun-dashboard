@@ -168,6 +168,16 @@ ui <-
             options = list(
               `actions-box` = TRUE),
             multiple = TRUE
+          downloadButton(
+            "data_csv",
+            " CSV",
+            style = "width:100%; background-color: #204d74; color: white"
+          ),
+          
+          downloadButton(
+            "data_xls",
+            " Excel",
+            style = "width:100%; background-color: #204d74; color: white"
           )
         ),
 
