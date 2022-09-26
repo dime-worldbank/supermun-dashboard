@@ -4,6 +4,7 @@ library(tidyverse)
 library(plotly)
 library(sf)
 library(DT)
+library(writexl)
 
 library(shiny)
 library(shinyjs)
@@ -30,8 +31,17 @@ communes <-
       "data",
       "communes.rds"
     )
-  ) %>%
-  st_as_sf
+  )
+
+map <-
+  read_rds(
+    file.path(
+      "data",
+      "map.rds"
+    )
+  )
+
+st_crs(map) <- "4326"
 
 map_data <-
   read_rds(
@@ -56,10 +66,6 @@ indicators <-
       "indicators.rds"
     )
   )
-
-st_crs(communes) <- "4326"
-st_crs(regions) <- "4326"
-
 
 indicator_list <-
   read_rds(

@@ -1,24 +1,31 @@
 display_map <-
-  function(data, input_year, input_var) {
+  function(input_year, input_var) {
+    
+    data <-
+      map_data[[input_var]] %>%
+      filter(year == input_year) %>%
+      right_join(map, by = "commune") %>%
+      st_as_sf
     
     title <-
       indicators %>%
       filter(indicator == input_var) %>%
       pull(title_french)
     
+    unit <-
+      indicators %>%
+      filter(indicator == input_var) %>%
+      pull(unit_french)
+    
+    
     static_map <-
       ggplot() +
       geom_sf(
         data = data,
-        fill = "white"
-      ) +
-      geom_sf(
-        data = data %>%
-          filter(year == input_year),
         aes(
-          #color = commune,
           fill = label,
           text = text
+          #color = commune
         )
       ) +
       labs(
@@ -63,5 +70,5 @@ display_map <-
         xaxis = list(visible = FALSE),
         yaxis = list(visible = FALSE)
       )
-
+    
   }

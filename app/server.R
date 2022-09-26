@@ -193,7 +193,7 @@
             input$map_var
           )
         
-        display_map(map_data[[input$map_var]], input$map_year, input$map_var) # Function defined in auxiliary/display_map.R
+        display_map(input$map_year, input$map_var) # Function defined in auxiliary/display_map.R
 
       })
     
@@ -235,7 +235,6 @@
      
        data <- 
          communes %>%
-         st_drop_geometry() %>%
          filter(
            commune %in% input$data_commune,
            province %in% input$data_province,

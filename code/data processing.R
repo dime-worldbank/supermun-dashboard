@@ -32,14 +32,14 @@ regions <-
     dTolerance = 1000
   )
 
-regions %>%
-  write_rds(
-    here(
-      "app",
-      "data",
-      "regions.rds"
-    )
-  )
+# regions %>%
+#   write_rds(
+#     here(
+#       "app",
+#       "data",
+#       "regions.rds"
+#     )
+#   )
 
 # Communes data ----------------------------------------------------------------
 
@@ -109,16 +109,6 @@ communes <-
       ~ str_to_title(.)
     )
   )
-
-communes %>%
-  write_rds(
-    here(
-      "app",
-      "data",
-      "communes.rds"
-    )
-  )
-
 
 # List of indicators -----------------------------------------------------------
 indicators <-
@@ -232,6 +222,21 @@ indicator_list %>%
 
 # Map data ---------------------------------------------------------------------
 
+communes %>%
+  select(commune, geometry) %>%
+  unique %>%
+  write_rds(
+    here(
+      "app",
+      "data",
+      "map.rds"
+    )
+  )
+
+communes <-
+  communes %>%
+  st_drop_geometry
+
 quintiles <- 
   function(var) {
     
@@ -280,7 +285,7 @@ quintiles <-
         ),
         text = ifelse(is.na(var), NA, text)
       ) %>%
-      select(year, label, text)
+      select(year, label, text, commune)
       
   }
 
@@ -295,6 +300,15 @@ map_data %>%
       "app",
       "data",
       "map_data.rds"
+    )
+  )
+
+communes %>%
+  write_rds(
+    here(
+      "app",
+      "data",
+      "communes.rds"
     )
   )
 
