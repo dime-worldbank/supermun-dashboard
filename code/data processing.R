@@ -269,7 +269,8 @@ quintiles <-
           unit, "<br><br>",
           "<b>", rank_country, "ème </b>sur ", n_country, " communes de Burkina Faso <br>",
           "<b>", rank_region, "ème </b>sur ", n_region, " communes de ", region
-        )
+        ),
+        text = ifelse(ia.na(var), NA, text)
       ) %>%
       select(year, label, text)
       

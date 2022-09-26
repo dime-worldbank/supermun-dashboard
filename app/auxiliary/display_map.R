@@ -1,14 +1,23 @@
 display_map <-
-  function(data, input_year, input_var, title) {
+  function(data, input_year, input_var) {
+    
+    title <-
+      indicators %>%
+      filter(indicator == input_var) %>%
+      pull(title_french)
     
     static_map <-
       ggplot() +
       geom_sf(
         data = data,
+        fill = "white"
+      ) +
+      geom_sf(
+        data = data %>%
+          filter(year == input_year),
         aes(
-          text = text,
-          fill = fill,
-          color = commune
+          fill = label,
+          text = text
         )
       ) +
       labs(
@@ -39,7 +48,6 @@ display_map <-
         line.color = toRGB("gray25"),
         traces = seq.int(2, 349)
       ) %>%
-      hide_legend %>%
       config(
         modeBarButtonsToRemove = plotly_remove_buttons,
         toImageButtonOptions = list(
