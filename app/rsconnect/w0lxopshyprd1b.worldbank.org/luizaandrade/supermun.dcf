@@ -5,9 +5,9 @@ account: luizaandrade
 server: w0lxopshyprd1b.worldbank.org
 hostUrl: http://w0lxopshyprd1b.worldbank.org:3939/__api__
 appId: 945
-bundleId: 46165
+bundleId: 47193
 url: http://w0lxopshyprd1b.worldbank.org:3939/supermun/
-when: 1656484750.00736
-lastSyncTime: 1656484750.00736
+when: 1664164759.04027
+lastSyncTime: 1664164759.04027
 asMultiple: FALSE
 asStatic: FALSE
