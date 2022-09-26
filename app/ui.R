@@ -24,15 +24,16 @@ ui <-
       br(),
       br(),
       br(),
-      
+
       sidebarLayout(
         sidebarPanel(
           pickerInput(
             inputId = "map_year",
             label = "Année",
-            choices = communes %>% pull(year) %>% unique %>% na.omit
+            choices = communes %>% pull(year) %>% unique %>% na.omit,
+            selected = 2018
           ),
-          
+
           pickerInput(
             inputId = "map_groupe",
             label = "Groupe d'indicateur",
@@ -41,16 +42,15 @@ ui <-
               "Services publics"
             )
           ),
-        
+
           radioGroupButtons(
             inputId = "map_var",
             label = "Liste des indicateurs",
             choices = ic,
             direction = "vertical"
           )
-          
         ),
-        
+
         mainPanel(
           plotlyOutput(
             "map",
@@ -76,7 +76,10 @@ ui <-
         choices = communes %>% pull(commune) %>% unique,
         selected = "Banfora",
         width = "100%",
-        options = list(style = "commune")
+        options = list(
+          style = "commune",
+          `live-search` = TRUE
+        )
       ),
 
       fluidRow(
@@ -95,79 +98,81 @@ ui <-
         )
       ),
 
-      bs4Card(
+      wellPanel(
         width = 12,
-        solidHeader = TRUE,
-        collapsible = FALSE,
-        status = "primary",
         dataTableOutput("table")
       )
-      
+
     ),
-    
+
     ## Data download -------------------------------------------------------
     
     tabPanel(
       "Données",
-      
+
       br(),
       br(),
       br(),
-      
+
       sidebarLayout(
         
+        ### Sidebar ----------------------------------------------------------
         sidebarPanel(
+          width = 3,
 
           pickerInput(
             inputId = "data_var",
             label = "Indicateurs",
             choices = indicator_list,
-            selected = indicator_list,
-            options = list(
-              `actions-box` = TRUE),
+            selected = c(ic, sd),
+            options = list(`actions-box` = TRUE),
             multiple = TRUE
           ),
-
-            
+          
+          
           pickerInput(
             inputId = "data_region",
             label = "Région",
-            choices = communes %>% pull(region) %>% unique,
-            selected = communes %>% pull(region) %>% unique,
-            options = list(
-              `actions-box` = TRUE),
+            choices = communes %>% arrange(region) %>% pull(region) %>% unique,
+            selected = communes %>% arrange(region) %>% pull(region) %>% unique,
+            options = list(`actions-box` = TRUE),
             multiple = TRUE
           ),
-           
+          
           pickerInput(
             inputId = "data_province",
             label = "Province",
-            choices = communes %>% pull(province) %>% unique,
-            selected = communes %>% pull(province) %>% unique,
+            choices = communes %>% arrange(province) %>% pull(province) %>% unique %>% na.omit,
+            selected = communes %>% arrange(province) %>% pull(province) %>% unique,
             options = list(
-              `actions-box` = TRUE),
+              `actions-box` = TRUE,
+              `live-search` = TRUE
+            ),
             multiple = TRUE
           ),
-            
+          
           pickerInput(
             inputId = "data_commune",
             label = "Commune",
             choices = communes %>% pull(commune) %>% unique,
             selected = communes %>% pull(commune) %>% unique,
             options = list(
-              `actions-box` = TRUE),
+              `actions-box` = TRUE,
+              `live-search` = TRUE
+            ),
             multiple = TRUE
           ),
-
-            
+          
+          
           pickerInput(
             inputId = "data_year",
             label = "Anée",
             choices = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
             selected = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
-            options = list(
-              `actions-box` = TRUE),
+            options = list(`actions-box` = TRUE),
             multiple = TRUE
+          ),
+          
           downloadButton(
             "data_csv",
             " CSV",
@@ -180,11 +185,15 @@ ui <-
             style = "width:100%; background-color: #204d74; color: white"
           )
         ),
-
+      
+      ### Main panel -----------------------------------------------------------
         mainPanel(
-          dataTableOutput("data")
+          width = 9,
+          dataTableOutput("data") 
         )
       )
+    ),
+    
     ## Data download -------------------------------------------------------
     
     tabPanel(
