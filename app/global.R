@@ -69,5 +69,8 @@ indicator_list <-
     )
   )
 
-ic <- indicator_list[1] %>% unname %>% unlist
-sd <- indicator_list[2] %>% unname %>% unlist
+ic <- indicators %>% filter(family == "Capacité institutionelle") %>% pull(indicator)
+names(ic) <- indicators %>% filter(family == "Capacité institutionelle") %>% pull(button)
+
+sd <- indicators %>% filter(family == "Services publics") %>% pull(indicator)
+names(sd) <- indicators %>% filter(family == "Services publics") %>% pull(button)

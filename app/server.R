@@ -155,7 +155,7 @@
           setNames(
             indicators %>% 
               filter(family == input$map_groupe) %>%
-              pull(title_french)
+              pull(button)
           )
       ),
       

@@ -37,8 +37,8 @@ ui <-
             inputId = "map_groupe",
             label = "Groupe d'indicateur",
             choices = c(
-              "Capacité institutionelle" = "ic",
-              "Services Publics" = "sd"
+              "Capacité institutionelle",
+              "Services publics"
             )
           ),
         
