@@ -102,7 +102,13 @@ communes <-
   communes  %>%
   left_join(panel) %>%
   arrange(commune) %>%
-  select(province, region, commune, year, indicators$indicator)
+  select(province, region, commune, year, indicators$indicator) %>%
+  mutate(
+    across(
+      c(province, region, commune),
+      ~ str_to_title(.)
+    )
+  )
 
 communes %>%
   write_rds(
@@ -130,7 +136,8 @@ indicators <-
       " (",
       unit_french,
       ")"
-    )
+    ),
+    subfamily = str_to_sentence(subfamily)
   )
 
 indicators %>%
@@ -157,6 +164,7 @@ table <-
     cols = c(starts_with("value"), starts_with("total")),
     names_to = "indicator"
   ) %>%
+  filter(!is.na(value)) %>%
   mutate(value = round(value, 1)) %>%
   arrange(year) %>%
   pivot_wider(
