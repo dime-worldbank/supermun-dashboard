@@ -6,13 +6,13 @@ value_taxes_raised,Capacité institutionelle,finances,Récettes fiscales par habit
 value_procurement,Capacité institutionelle,procurement,Taux d'exécution du plan de passation des marchés,Pourcent,Taux d’exécution du plan de passation des marchés (%)
 value_staffing,Capacité institutionelle,staffing,Nombre de personnel remplissant l'organigramme type,Nombre,
 total_points_ic,Capacité institutionelle,summary,Capacité institutionnelle,Points,
-value_school_wells,Services Publics,education,Taux d'écoles avec un forage fonctionnel,Pourcent,Taux d’écoles avec une source d’eau potable fonctionnelle (%)
-value_school_supplies,Services Publics,education,Retard moyen d'approvisionnement en fournitures scolaires,Nombre,Retard moyen d’approvisionnement en fournitures scolaires (Jours)
-value_school_latrines,Services Publics,education,Taux d'écoles avec un nombre suffisant des latrines fonctionnelles,Pourcent,Taux d’écoles avec un nombre suffisant de latrines fonctionnelles (%)
-value_passing_exam,Services Publics,education,Taux d'admission du CEP,Difference to National Average (Percentage Points),Écart entre le taux d’admission du CEP dans la commune et au niveau national (Points de pourcentage)
-value_vaccines,Services Publics,health,Taux de nourrisons de 0-11 mois ayant reçu les vaccins recommandés,Pourcent,Taux de nourrissons de 0-11 mois ayant reçu les vaccins recommandés (%)
-value_csps,Services Publics,health,Taux de CSPS ayant reçu un stock de gaz suffisant,Pourcent,Taux de CSPS ayant reçu un stock de gaz suffisant(%)
-value_assisted_births,Services Publics,health,Taux d'accouchements assistés,Pourcent,Taux d’accouchements assistés(%)
-value_birth_certificates,Services Publics,services,Taux d'actes de naissances délivrés,Pourcent,Taux d’actes de naissances délivrés (Pourcentage des naissances attendues) 
-total_points_sd,Services Publics,summary,Services publics,Points,
-value_water_access,Services Publics,water,Taux de la population ayant accès à une source d’eau potable fonctionnelle ,Pourcent,Taux de la population de la commune avec accès à une source d'eau potable à <1000m pour <300 personnes
+value_school_wells,Services publics,education,Taux d'écoles avec un forage fonctionnel,Pourcent,Taux d’écoles avec une source d’eau potable fonctionnelle (%)
+value_school_supplies,Services publics,education,Retard moyen d'approvisionnement en fournitures scolaires,Nombre,Retard moyen d’approvisionnement en fournitures scolaires (Jours)
+value_school_latrines,Services publics,education,Taux d'écoles avec un nombre suffisant des latrines fonctionnelles,Pourcent,Taux d’écoles avec un nombre suffisant de latrines fonctionnelles (%)
+value_passing_exam,Services publics,education,Taux d'admission du CEP,Difference to National Average (Percentage Points),Écart entre le taux d’admission du CEP dans la commune et au niveau national (Points de pourcentage)
+value_vaccines,Services publics,health,Taux de nourrisons de 0-11 mois ayant reçu les vaccins recommandés,Pourcent,Taux de nourrissons de 0-11 mois ayant reçu les vaccins recommandés (%)
+value_csps,Services publics,health,Taux de CSPS ayant reçu un stock de gaz suffisant,Pourcent,Taux de CSPS ayant reçu un stock de gaz suffisant(%)
+value_assisted_births,Services publics,health,Taux d'accouchements assistés,Pourcent,Taux d’accouchements assistés(%)
+value_birth_certificates,Services publics,services,Taux d'actes de naissances délivrés,Pourcent,Taux d’actes de naissances délivrés (Pourcentage des naissances attendues) 
+total_points_sd,Services publics,summary,Services publics,Points,
+value_water_access,Services publics,water,Taux de la population ayant accès à une source d’eau potable fonctionnelle ,Pourcent,Taux de la population de la commune avec accès à une source d'eau potable à <1000m pour <300 personnes

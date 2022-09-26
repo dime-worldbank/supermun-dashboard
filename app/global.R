@@ -33,12 +33,11 @@ communes <-
   ) %>%
   st_as_sf
 
-
-regions <-
+map_data <-
   read_rds(
     file.path(
       "data",
-      "regions.rds"
+      "map_data.rds"
     )
   )
 
@@ -61,22 +60,14 @@ indicators <-
 st_crs(communes) <- "4326"
 st_crs(regions) <- "4326"
 
+
 indicator_list <-
-  indicators$indicator
-
-names(indicator_list) <- indicators$title_french
-
-ic <- 
-  indicators %>% 
-  filter(family == "ic") %>%
-  pull(indicator) %>%
-  setNames(
-    indicators %>% 
-      filter(family == "ic") %>%
-      pull(title_french)
+  read_rds(
+    file.path(
+      "data",
+      "indicator_list.rds"
+    )
   )
 
-families <- 
-  indicators %>%
-  filter(family == "ic") %>%
-  select(indicator, Indicateur)
+ic <- indicator_list[1] %>% unname %>% unlist
+sd <- indicator_list[2] %>% unname %>% unlist

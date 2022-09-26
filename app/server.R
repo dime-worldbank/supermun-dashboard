@@ -193,70 +193,7 @@
             input$map_var
           )
         
-        unit <-
-          indicators %>%
-          filter(indicator == var) %>%
-          pull(unit_french)
-        
-        title <-
-          indicators %>%
-          filter(indicator == var) %>%
-          pull(title_french)
-        
-        quintiles <-
-          communes %>%
-          filter(year == input$map_year) %>%
-          pull(get(var)) %>%
-          quantile(
-            probs = seq(0, 1, 0.2), 
-            na.rm = TRUE
-          ) %>% 
-          round(0) %>% 
-          unname
-        
-        data <-
-          communes %>%
-          filter(year == input$map_year) %>%
-          mutate(
-            fill = case_when(
-              (get(var) < quintiles[2]) ~ 5,
-              (get(var) > quintiles[2]) & (get(var) < quintiles[3]) ~ 4,
-              (get(var) > quintiles[3]) & (get(var) < quintiles[4]) ~ 3,
-              (get(var) > quintiles[4]) & (get(var) < quintiles[5]) ~ 2,
-              (get(var) > quintiles[5]) ~ 1
-            ) %>%
-              factor(
-                labels = c(
-                  paste0(quintiles[5], "+"),
-                  paste0(quintiles[4], "-", quintiles[5]),
-                  paste0(quintiles[3], "-", quintiles[4]),
-                  paste0(quintiles[2], "-", quintiles[3]),
-                  paste0(quintiles[2], "-")
-                )
-              ),
-            n_country = get(var) %>% na.omit %>% length,
-            rank_country = rank(get(var))
-          ) %>%
-          group_by(region) %>%
-          mutate(
-            n_region = get(var) %>% na.omit %>% length,
-            rank_region = rank(get(var))
-          ) %>%
-          ungroup %>%
-          mutate(
-            text = paste0(
-              "<b>Commune de ", commune, "</b><br><br>",
-              "<b>Province:</b> ", province, "<br>",
-              "<b>Région:</b> ", region, "<br><br>",
-              "<b>", title, " (", year, "): </b>",
-              get(var) %>% round(1), " ",
-              unit, "<br><br>",
-              "<b>",rank_country, "ème </b>sur ", n_country, " communes de Burkina Faso <br>",
-              "<b>",rank_region, "ème </b>sur ", n_region, " communes de ", region
-            )
-          )
-        
-        display_map(data, input$map_year, input$map_var, title) # Function defined in auxiliary/display_map.R
+        display_map(map_data[[input$map_var]], input$map_year, input$map_var) # Function defined in auxiliary/display_map.R
 
       })
     
@@ -275,7 +212,14 @@
   output$data <-
       renderDataTable(
         {
-          communes %>%
+          
+          names <-
+            indicators %>%
+            filter(indicator %in% input$data_var) %>%
+            pull(title_french)
+          
+          data <- 
+            communes %>%
             st_drop_geometry() %>%
             filter(
               commune %in% input$data_commune,
@@ -283,19 +227,18 @@
               region %in% input$data_region,
               year %in% as.numeric(input$data_year)
             ) %>%
-            select(
-              commune,
-              province,
-              region,
-              year,
-              all_of(input$data_var)
-            ) %>%
+            select(province, region, commune, year, all_of(input$data_var)) %>%
             mutate(
               across(
                 all_of(input$data_var),
                 ~ round(., 3)
               )
             )
+            
+          names(data) <-
+            c("Province", "Région", "Commune", "Année", indicators$title_french)
+          
+          data
         },
         extensions = 'Buttons',
         filter = "top",

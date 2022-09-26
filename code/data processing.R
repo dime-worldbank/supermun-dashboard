@@ -97,10 +97,12 @@ panel_long <-
   )
 
 ## Combine all data ------------------------------------------------------------
+
 communes <-
   communes  %>%
-  right_join(panel) %>%
-  arrange(commune)
+  left_join(panel) %>%
+  arrange(commune) %>%
+  select(province, region, commune, year, indicators$indicator)
 
 communes %>%
   write_rds(
@@ -183,3 +185,107 @@ table %>%
       "data_table.rds"
     )
   )
+
+# List of indicators -----------------------------------------------------------
+ic <- 
+  indicators %>%
+  filter(family == "Capacité institutionelle") %>%
+  pull(indicator)
+
+names(ic) <- 
+  indicators %>%
+  filter(family == "Capacité institutionelle") %>%
+  pull(title_french)
+
+sd <- 
+  indicators %>%
+  filter(family == "Services publics") %>%
+  pull(indicator)
+
+names(sd) <- 
+  indicators %>%
+  filter(family == "Services publics") %>%
+  pull(title_french)
+
+indicator_list <-
+  list(
+    "Capacité institutionelle" = ic,
+    "Services publics" = sd
+  )
+
+indicator_list %>%
+  write_rds(
+    here(
+      "app",
+      "data",
+      "indicator_list.rds"
+    )
+  )
+
+# Map data ---------------------------------------------------------------------
+
+quintiles <- 
+  function(var) {
+    
+    title <-
+      indicators %>%
+      filter(indicator == var) %>%
+      pull(title_french)
+    
+    unit <-
+      indicators %>%
+      filter(indicator == var) %>%
+      pull(unit_french)
+    
+    data <-
+      communes %>%
+      select(year, region, commune, province, all_of(var)) %>%
+      group_by(year, region) %>%
+      mutate(
+        var = get(var), 
+        n_region = var %>% na.omit %>% length,
+        rank_region = rank(var)
+      ) %>%
+      group_by(year) %>%
+      mutate(
+        quintile = ntile(var, 5),
+        var = round(var, 1),
+        n_country = var %>% na.omit %>% length,
+        rank_country = rank(var)
+      ) %>%
+      group_by(year, quintile) %>%
+      mutate(
+        label = paste(min(var), "-", max(var)),
+        label = ifelse(is.na(var), NA, label)
+      ) %>%
+      ungroup %>%
+      mutate(
+        text = paste0(
+          "<b>Commune de ", commune, "</b><br><br>",
+          "<b>Province:</b> ", province, "<br>",
+          "<b>Région:</b> ", region, "<br><br>",
+          "<b>", title, " (", year, "): </b>",
+          var, " ",
+          unit, "<br><br>",
+          "<b>", rank_country, "ème </b>sur ", n_country, " communes de Burkina Faso <br>",
+          "<b>", rank_region, "ème </b>sur ", n_region, " communes de ", region
+        )
+      ) %>%
+      select(year, label, text)
+      
+  }
+
+map_data <-
+  map(indicators$indicator, quintiles)
+
+names(map_data) <- indicators$indicator
+
+map_data %>%
+  write_rds(
+    here(
+      "app",
+      "data",
+      "map_data.rds"
+    )
+  )
+
