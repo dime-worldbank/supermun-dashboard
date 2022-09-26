@@ -256,5 +256,49 @@
         rownames = FALSE,
         server = FALSE
       )
+# Indicators -------------------------------------------------------------------
+  
+  output$indicators <-
+    renderDataTable(
+      {
+        table <-
+          datatable(
+            indicators %>%
+              select(family, title_french, unit_french, definition_french) %>%
+              arrange(family, title_french) %>%
+              set_names("Groupe", "Indicateur", "Unité de mesure", "Définition"),
+            extensions = 'Buttons',
+            filter = "top",
+            selection = "multiple",
+            escape = FALSE,
+            options = list(
+              dom  = 'tB',
+              rowsGroup = list(0),
+              pageLength = 17,
+              autoWidth = TRUE,
+              buttons = c('copy', 'csv', 'excel'),
+              lengthMenu = c(10, 20, 50, 100),
+              scrollX = TRUE,
+              scroller = TRUE
+            ),
+            rownames = FALSE
+          )
+        
+        table$dependencies <-
+          c(
+            table$dependencies,
+            list(
+              htmlDependency(
+                "RowsGroup",
+                "2.0.0",
+                src = "www",
+                script = "dataTables.rowsGroup.js"
+              )
+            )
+          )
+        
+        table
+      }
+    )
   }
 

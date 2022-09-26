@@ -174,6 +174,17 @@ ui <-
           dataTableOutput("data")
         )
       )
+    ## Data download -------------------------------------------------------
+    
+    tabPanel(
+      "Indicateurs",
+      
+      br(),
+      br(),
+      br(),
+      
+      dataTableOutput("indicators")
+
     )
     
   ) # navbarPage
