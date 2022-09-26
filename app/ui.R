@@ -54,8 +54,9 @@ ui <-
         mainPanel(
           plotlyOutput(
             "map",
-            height = "800px"
-          )
+            height = "700px"
+          ),
+          htmlOutput("map_note")
         )
       )
     ),

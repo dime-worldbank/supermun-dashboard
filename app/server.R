@@ -197,6 +197,21 @@
 
       })
     
+    output$map_note <-
+      renderUI({
+        HTML(
+          str_wrap(
+            paste(
+              "<b>Définition:</b>",
+              indicators %>%
+                filter(indicator == input$map_var) %>%
+                pull(definition_french)
+            ),
+            note_chars
+          )
+        )
+      })
+    
 # Data -------------------------------------------------------------------------
     
   output$ic_value <-

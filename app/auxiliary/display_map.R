@@ -57,29 +57,9 @@ display_map <-
         )
       ) %>%
       layout(
-        margin = list(t = 75, b = 180, r = 20, l = 20),
+        margin = list(t = 75),
         xaxis = list(visible = FALSE),
-        yaxis = list(visible = FALSE),
-        annotations =
-          list(
-            x = -1.5,
-            y = 9,
-            text = HTML(
-              paste(
-                str_wrap(
-                  paste(
-                    "<b>Définition:</b>",
-                    indicators %>%
-                      filter(indicator == input_var) %>%
-                      pull(definition_french)
-                  ),
-                  note_chars
-                )
-              )
-            ),
-            showarrow = F,
-            font = list(size = note_size)
-          )
+        yaxis = list(visible = FALSE)
       )
 
   }
