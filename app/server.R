@@ -6,7 +6,7 @@
     
 ### Boxes ----------------------------------------------------------------------
     output$ic <-
-      renderInfoBox({
+      renderValueBox({
         
         year_max <- 
           communes %>%
@@ -17,22 +17,25 @@
           pull(year) %>%
           max 
         
-        bs4ValueBox(
-          value = 
-            communes %>%
-            filter(
-              commune == input$profile_commune,
-              year == year_max
-            ) %>%
-            pull(total_points_ic) %>%
-            round(1),
+        value <- 
+          communes %>%
+          filter(
+            commune == input$profile_commune,
+            year == year_max
+          ) %>%
+          pull(total_points_ic) %>%
+          round(1)
+        
+        valueBox(
+          value = value,
           subtitle = paste("Capacité institutionelle\n(", year_max, ")"),
-          icon = icon("university", lib = "font-awesome")
+          icon = icon("university", lib = "font-awesome"),
+          color = "info"
         )
       })
     
     output$sd <-
-      renderInfoBox({
+      renderValueBox({
         
         year_max <- 
           communes %>%
@@ -42,17 +45,21 @@
           pull(year) %>%
           max
         
-        bs4ValueBox(
+        value <-
           communes %>%
-            filter(
-              commune == input$profile_commune,
-              year == year_max
-            ) %>%
-            pull(total_points_sd) %>%
-            round(1),
+          filter(
+            commune == input$profile_commune,
+            year == year_max
+          ) %>%
+          pull(total_points_sd) %>%
+          round(1)
+        
+        valueBox(
+          value,
           width = 12,
           subtitle = paste("Services publics\n(", year_max, ")"),
-          icon = icon("hand-holding", lib = "font-awesome")
+          icon = icon("hand-holding", lib = "font-awesome"),
+          color = "info"
         )
       })
     

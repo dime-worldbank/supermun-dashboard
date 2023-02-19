@@ -34,7 +34,7 @@ line_plot <-
         )
       ) +
       geom_line(
-        color = "navy",
+        color = info,
         size = 1,
       ) +
       geom_point(
@@ -47,7 +47,7 @@ line_plot <-
             unit
           )
         ),
-        color = "navy",
+        color = info_dark,
         size = 3
       ) +
       scale_x_discrete(limits = interval) +

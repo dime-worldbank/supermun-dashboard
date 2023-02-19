@@ -9,14 +9,14 @@ ui <-
     id = "main",
     collapsible = T, 
     position = "fixed-top",
-    includeCSS("www/styles.css"),
+    theme = shinytheme("united"),
     header = tagList(
       useShinydashboard()
     ),
+    tags$style(
+      ".commune {font-size: 36px;} .download {width: 49%; background-color: #17a2b8; color: white}"
+    ),
     
-    tags$style(".commune {font-size: 36px; font-family: 'Source Sans Pro',sans-serif; margin-top: 20px;
-    margin-bottom: 10px; font-weight: 500; line-height: 1.1; background-color: '#FF6961';"),
-
     # Tab panel: home -----------------
     tabPanel(
       "Accueil",
@@ -85,8 +85,8 @@ ui <-
       fluidRow(
         column(
           width = 3,
-          fluidRow(infoBoxOutput("ic", width = 12)),
-          fluidRow(infoBoxOutput("sd", width = 12))
+          fluidRow(valueBoxOutput("ic", width = 12)),
+          fluidRow(valueBoxOutput("sd", width = 12))
         ),
         column(
           width = 9,
@@ -176,13 +176,13 @@ ui <-
           downloadButton(
             "data_csv",
             " CSV",
-            style = "width:100%; background-color: #204d74; color: white"
+            class = "download"
           ),
           
           downloadButton(
             "data_xls",
             " Excel",
-            style = "width:100%; background-color: #204d74; color: white"
+            class = "download"
           )
         ),
       

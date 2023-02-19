@@ -13,20 +13,31 @@ library(shinydashboard)
 library(shinycssloaders)
 library(shinybusy)
 library(shinyWidgets)
-library(bs4Dash)
-library(fresh)
 library(htmltools)
 
 
 library(DT)
 library(data.table)
 
-# Data ----------------------------------------------------------------------
+# United theme ---------------------------------------------------------------
+
+info <- "#17a2b8"
+info_dark <- "#148a9c"
+dark <- "#772953"
+warning <- "#efb73e"
+success <- "#38b44a"
+secondary <- "#aea79f"
+light <- "#e9ecef"
+primary <- "#e95420"
+      
+
+# Auxiliary functions -------------------------------------------------------
 
 source("auxiliary/params.R")
 source("auxiliary/display_map.R")
 source("auxiliary/line_plot.R")
 
+# Data ----------------------------------------------------------------------
 
 communes <-
   read_rds(
