@@ -3,7 +3,6 @@
 library(tidyverse)
 library(plotly)
 library(sf)
-library(DT)
 library(writexl)
 
 library(shiny)
@@ -17,6 +16,10 @@ library(shinyWidgets)
 library(bs4Dash)
 library(fresh)
 library(htmltools)
+
+
+library(DT)
+library(data.table)
 
 # Data ----------------------------------------------------------------------
 
