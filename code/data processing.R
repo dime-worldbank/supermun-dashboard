@@ -32,14 +32,14 @@ regions <-
     dTolerance = 1000
   )
 
-# regions %>%
-#   write_rds(
-#     here(
-#       "app",
-#       "data",
-#       "regions.rds"
-#     )
-#   )
+regions %>%
+  write_rds(
+    here(
+      "app",
+      "data",
+      "regions.rds"
+    )
+  )
 
 # Communes data ----------------------------------------------------------------
 
@@ -96,20 +96,6 @@ panel_long <-
     rank_region = rank(value)
   )
 
-## Combine all data ------------------------------------------------------------
-
-communes <-
-  communes  %>%
-  left_join(panel) %>%
-  arrange(commune) %>%
-  select(province, region, commune, year, indicators$indicator) %>%
-  mutate(
-    across(
-      c(province, region, commune),
-      ~ str_to_title(.)
-    )
-  )
-
 # List of indicators -----------------------------------------------------------
 indicators <-
   read_csv(
@@ -136,6 +122,20 @@ indicators %>%
       "app",
       "data",
       "indicators.rds"
+    )
+  )
+
+## Combine all data ------------------------------------------------------------
+
+communes <-
+  communes  %>%
+  left_join(panel) %>%
+  arrange(commune) %>%
+  select(province, region, commune, year, indicators$indicator) %>%
+  mutate(
+    across(
+      c(province, region, commune),
+      ~ str_to_title(.)
     )
   )
 
