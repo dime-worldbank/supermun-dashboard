@@ -4,216 +4,276 @@
     
 ## Commune profile -------------------------------------------------------------
     
+### Boxes ----------------------------------------------------------------------
+    output$ic <-
+      renderValueBox({
+        
+        year_max <- 
+          communes %>%
+          filter(
+            commune == input$profile_commune,
+            !is.na(total_points_ic)
+          ) %>%
+          pull(year) %>%
+          max 
+        
+        value <- 
+          communes %>%
+          filter(
+            commune == input$profile_commune,
+            year == year_max
+          ) %>%
+          pull(total_points_ic) %>%
+          round(1)
+        
+        valueBox(
+          value = value,
+          subtitle = paste("Capacité institutionelle\n(", year_max, ")"),
+          icon = icon("university", lib = "font-awesome"),
+          color = "info"
+        )
+      })
+    
+    output$sd <-
+      renderValueBox({
+        
+        year_max <- 
+          communes %>%
+          filter(
+            commune == input$profile_commune,
+            !is.na(total_points_sd)) %>%
+          pull(year) %>%
+          max
+        
+        value <-
+          communes %>%
+          filter(
+            commune == input$profile_commune,
+            year == year_max
+          ) %>%
+          pull(total_points_sd) %>%
+          round(1)
+        
+        valueBox(
+          value,
+          width = 12,
+          subtitle = paste("Services publics\n(", year_max, ")"),
+          icon = icon("hand-holding", lib = "font-awesome"),
+          color = "info"
+        )
+      })
+    
 ### Institutional capacity table -----------------------------------------------
     
-    output$profile_title <-
-      renderText(paste("Commune de", input$profile_commune))
-    
-    output$table <-
-      renderTable(
-        communes %>%
-          st_drop_geometry %>%
-          filter(commune == input$profile_commune) %>%
-          select(
-            year,
-            starts_with("value")
-          ) %>%
-          pivot_longer(
-            cols = starts_with("value"),
-            names_to = "indicator"
-          ) %>%
-          pivot_wider(
-            names_from = year
-          ) %>%
-          inner_join(ic) %>%
-          select(
-            Indicateur,
-            starts_with("20")
+  output$table <-
+      renderDataTable({
+        
+        table <-
+          datatable(
+            data_table %>%
+              filter(
+                commune == input$profile_commune
+              ) %>%
+              select(-commune),
+            rownames = FALSE,
+            options = 
+              list(
+                dom = 't',
+                rowsGroup = list(0),
+                scrollX = TRUE,
+                scrollY = TRUE,
+                pageLength = 17
+              ),
+            selection = 
+              list(
+                mode = "single"
+              )
           )
-      )
+
+        table$dependencies <- 
+          c(
+            table$dependencies, 
+            list(
+              htmlDependency(
+                "RowsGroup", 
+                "2.0.0", 
+                src = "www", 
+                script = "dataTables.rowsGroup.js"
+              )
+            )
+          )
+        
+        table
+        
+      })
+    
+  selected_var <-
+    eventReactive(
+      input$table_rows_selected,
+      
+      {
+        if (is.null(input$table_rows_selected)) {
+          "Capacité institutionnelle (Points)"
+        } else {
+          data_table[input$table_rows_selected, "Indicateur"] %>% unlist %>% unname
+        }
+      },
+      
+      ignoreNULL = FALSE
+    )
+ 
 
 ### Selected graph -------------------------------------------------------------
-    
-    output$line_plot_title <-
-      renderText(
-        indicators %>%
-          filter(indicator == input$profile_var) %>%
-          pull(title_french)
-      )
-    
-    unit <- 
-      eventReactive(
-        input$profile_var,
-        
-        indicators %>%
-          filter(indicator == input$profile_var) %>%
-          pull(unit_french)
-      )
-    
-    output$line_plot_unit <-
-      renderText({
-        paste0("(", unit(), ")")
-      })
-      
+
     output$line_plot <-
       renderPlotly({
+
+        line_plot(communes, input$profile_commune, selected_var())
         
-        static <-
-          communes %>%
-            st_drop_geometry %>%
-            filter(commune == input$profile_commune) %>%
-            ggplot(
-              aes_string(
-                x = "year",
-                y = input$profile_var
-              )
-            ) +
-            geom_line(
-              color = "navy",
-              size = 1,
-            ) +
-            geom_point(
-              aes(
-                text = paste0(
-                  year,
-                  "<br>",
-                  round(get(input$profile_var), 1),
-                  " ",
-                  unit()
-                )
-              ),
-              color = "navy",
-              size = 3
-            ) +
-            theme_minimal() +
-            labs(x = NULL, y = NULL)
-        
-        ggplotly(static, tooltip = "text")
       })
+  
+  output$plot_note <-
+    renderUI({
+      HTML(
+        str_wrap(
+          paste(
+            "<b>Définition:</b>",
+            indicators %>%
+              filter(Indicateur == selected_var()) %>%
+              pull(definition_french)
+          ),
+          note_chars
+        )
+      )
+    })
     
 ## Map -------------------------------------------------------------------------
     
-    output$map_title <-
-      renderText(
-        indicators %>%
-          filter(indicator == input$map_var) %>%
-          pull(title_french)
-      )
+    observeEvent(
+      input$map_groupe,
+      
+      # List of indicators is updated based on family
+      updateRadioGroupButtons(
+        session,
+        "map_var",
+        choices = indicators %>% 
+          filter(family == input$map_groupe) %>%
+          pull(indicator) %>%
+          setNames(
+            indicators %>% 
+              filter(family == input$map_groupe) %>%
+              pull(button)
+          )
+      ),
+      
+      ignoreInit = TRUE
+    )
     
-    output$map_year <-
-      renderText(
-        input$map_year
+    output$map_def_h <-
+      renderUI({
+        if (!is.null(input$map_var)) {
+          p(tags$b("Description de l'indicateur"))
+        }
+      })
+    
+    map_def <-
+      eventReactive(
+        input$map_var,
+        {
+          indicators %>%
+            filter(indicator == input$map_var) %>%
+            pull(definition_french)
+        },
+        
+        ignoreNULL = FALSE
       )
+
     
 ### Map ------------------------------------------------------------------------
     output$map <-
       renderPlotly({
         
-        unit <-
-          indicators %>%
-          filter(indicator == input$map_var) %>%
-          pull(unit_french)
-        
-        title <-
-          indicators %>%
-          filter(indicator == input$map_var) %>%
-          pull(title_french)
-        
-        data <-
-          communes %>%
-          filter(year == input$map_year) %>%
-          mutate(
-            n_country = get(input$map_var) %>% na.omit %>% length,
-            rank_country = rank(get(input$map_var))
-          ) %>%
-          group_by(region) %>%
-          mutate(
-            n_region = get(input$map_var) %>% na.omit %>% length,
-            rank_region = rank(get(input$map_var))
-          ) %>%
-          ungroup %>%
-          mutate(
-            text = paste0(
-              "Commune de ", commune, "<br><br>",
-              "Province: ", province, "<br>",
-              "Région: ", region, "<br><br>",
-              title, " (", year, "): ", 
-              get(input$map_var) %>% round(1), " ",
-              unit, "<br>",
-              rank_country, "ème sur ", n_country, " communes de Burkina Faso <br>",
-              rank_region, "ème sur ", n_region, " communes de ", region
-            )
+        var <-
+          ifelse(
+            is.null(input$map_var),
+            "total_points_ic",
+            input$map_var
           )
         
-        static <-
-          ggplot() +
-          geom_sf(
-            data = communes,
-            aes(
-              text = commune
+        display_map(input$map_year, input$map_var) # Function defined in auxiliary/display_map.R
+
+      })
+    
+    output$map_note <-
+      renderUI({
+        HTML(
+          str_wrap(
+            paste(
+              "<b>Définition:</b>",
+              indicators %>%
+                filter(indicator == input$map_var) %>%
+                pull(definition_french)
             ),
-            color = "black"
-          ) +
-          geom_sf(
-            data = data,
-            aes_string(
-              fill = input$map_var,
-              text = "text"
-            ),
-            color = "black"
-          ) + 
-          geom_sf(
-            data = regions,
-            fill = alpha("white", 0),
-            color = alpha("black", 1),
-            size = 1
-          ) +
-          labs(
-            fill = unit
-          ) +
-          theme_void() 
-        
-        ggplotly(
-          static, 
-          tooltip = "text"
+            note_chars
+          )
         )
-        
       })
     
 # Data -------------------------------------------------------------------------
     
+  output$ic_value <-
+    renderText(
+      panel %>%
+        filter(
+          commune == input$profile_commune,
+          year == 2018
+        ) %>%
+        pull(total_points_ic)
+    )
+    
+  data <-
+   eventReactive(
+     c(input$data_commune, input$data_province, input$data_region, input$data_year, input$data_var),
+     {
+       names <-
+        indicators %>%
+        filter(indicator %in% input$data_var) %>%
+        pull(Indicateur)
+     
+       data <- 
+         communes %>%
+         filter(
+           commune %in% input$data_commune,
+           province %in% input$data_province,
+           region %in% input$data_region,
+           year %in% as.numeric(input$data_year)
+         ) %>%
+         select(province, region, commune, year, all_of(input$data_var)) %>%
+         mutate(
+           across(
+             all_of(input$data_var),
+             ~ round(., 3)
+           )
+         )
+       
+        names(data) <-
+          c("Province", "Région", "Commune", "Année", names)
+       
+       data
+     }
+   )
+  
   output$data <-
       renderDataTable(
         {
-          communes %>%
-            st_drop_geometry() %>%
-            filter(
-              commune %in% input$data_commune,
-              province %in% input$data_province,
-              region %in% input$data_region,
-              year %in% as.numeric(input$data_year)
-            ) %>%
-            select(
-              commune,
-              province,
-              region,
-              year,
-              all_of(input$data_var)
-            ) %>%
-            mutate(
-              across(
-                all_of(input$data_var),
-                ~ round(., 3)
-              )
-            )
+          data()
         },
-        extensions = 'Buttons',
         filter = "top",
         selection = "multiple",
         escape = FALSE,
         options = list(
-          sDom  = '<"top">Bt<"bottom">ip',
-          pageLength = 10,
+          sDom  = '<"top">t<"bottom">ip',
+          pageLength = 15,
           autoWidth = TRUE,
           buttons = c('copy', 'csv', 'excel'),
           lengthMenu = c(10, 20, 50, 100),
@@ -223,5 +283,73 @@
         rownames = FALSE,
         server = FALSE
       )
+  
+  output$data_csv <-
+    downloadHandler(
+      filename = "supermun.csv",
+      
+      content = function(file) {
+        write_csv(
+          data(),
+          file
+        )
+      }
+    )
+  
+  output$data_xls <-
+    downloadHandler(
+      filename = "supermun.xlsx",
+      
+      content = function(file) {
+        write_xlsx(
+          data(),
+          file
+        )
+      }
+    )
+  
+# Indicators -------------------------------------------------------------------
+  
+  output$indicators <-
+    renderDataTable(
+      {
+        table <-
+          indicators %>%
+            select(family, title_french, unit_french, definition_french) %>%
+            arrange(family, title_french) %>%
+            set_names("Groupe", "Indicateur", "Unité de mesure", "Définition") %>%
+            datatable(
+              rownames = FALSE,
+              filter = "top",
+              selection = "multiple",
+              escape = FALSE,
+              extensions = 'Buttons',
+              options = list(
+                buttons = c('copy', 'csv', 'excel'),
+                dom  = 'tB',
+                pageLength = 17,
+                lengthMenu = c(10, 20, 50, 100),
+                #scrollX = TRUE,
+                #scroller = TRUE,
+                rowsGroup = list(0)
+              )
+            )
+        
+        table$dependencies <-
+          c(
+            table$dependencies,
+            list(
+              htmlDependency(
+                "RowsGroup",
+                "2.0.0",
+                src = "www",
+                script = "dataTables.rowsGroup.js"
+              )
+            )
+          )
+
+        table
+      }
+    )
   }
 

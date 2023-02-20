@@ -3,16 +3,39 @@
 library(tidyverse)
 library(plotly)
 library(sf)
-library(DT)
+library(writexl)
 
 library(shiny)
 library(shinyjs)
 library(shinyBS)
+library(shinythemes)
+library(shinydashboard)
 library(shinycssloaders)
 library(shinybusy)
 library(shinyWidgets)
-library(bs4Dash)
-library(fresh)
+library(htmltools)
+
+
+library(DT)
+library(data.table)
+
+# United theme ---------------------------------------------------------------
+
+info <- "#17a2b8"
+info_dark <- "#148a9c"
+dark <- "#772953"
+warning <- "#efb73e"
+success <- "#38b44a"
+secondary <- "#aea79f"
+light <- "#e9ecef"
+primary <- "#e95420"
+      
+
+# Auxiliary functions -------------------------------------------------------
+
+source("auxiliary/params.R")
+source("auxiliary/display_map.R")
+source("auxiliary/line_plot.R")
 
 # Data ----------------------------------------------------------------------
 
@@ -24,12 +47,29 @@ communes <-
     )
   )
 
-
-regions <-
+map <-
   read_rds(
     file.path(
       "data",
-      "regions.rds"
+      "map.rds"
+    )
+  )
+
+st_crs(map) <- "4326"
+
+map_data <-
+  read_rds(
+    file.path(
+      "data",
+      "map_data.rds"
+    )
+  )
+
+data_table <-
+  read_rds(
+    file.path(
+      "data",
+      "data_table.rds"
     )
   )
 
@@ -42,15 +82,15 @@ indicators <-
   )
 
 indicator_list <-
-  indicators$indicator
+  read_rds(
+    file.path(
+      "data",
+      "indicator_list.rds"
+    )
+  )
 
-names(indicator_list) <- indicators$title_french
+ic <- indicators %>% filter(family == "Capacité institutionelle") %>% pull(indicator)
+names(ic) <- indicators %>% filter(family == "Capacité institutionelle") %>% pull(button)
 
-st_crs(communes) <- "4326"
-st_crs(regions) <- "4326"
-
-
-ic <- 
-  indicators %>%
-  filter(family == "ic") %>%
-  select(indicator, Indicateur)
+sd <- indicators %>% filter(family == "Services publics") %>% pull(indicator)
+names(sd) <- indicators %>% filter(family == "Services publics") %>% pull(button)

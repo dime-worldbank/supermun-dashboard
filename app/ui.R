@@ -1,230 +1,210 @@
 # UI ###########################################################################
 
-ui <-
-  dashboardPage(
+ui <- 
 
-    freshTheme = create_theme(bs4dash_layout(sidebar_width = "300px")),
-
-    ## Header ------------------------------------------------------------------
-
-    dashboardHeader(
-
-      title = dashboardBrand(
-        title = "SUPERMUN",
-      ),
-      status = "white",
-      border = TRUE,
-      sidebarIcon = icon("bars"),
-      controlbarIcon = icon("th"),
-      fixed = FALSE
-
+  navbarPage(
+    
+    "Suivi des perfomances municipales",
+    fluid = FALSE,
+    id = "main",
+    collapsible = T, 
+    position = "fixed-top",
+    theme = shinytheme("united"),
+    header = tagList(
+      useShinydashboard()
     ),
-
-    ## Navigation menu ---------------------------------------------------------
-    dashboardSidebar(
-
-      status = "info",
-      skin = "light",
-      elevation = 5,
-
-      sidebarMenu(
-        menuItem("Home", tabName = "home", icon = icon("home")),
-        menuItem("Map", tabName = "map", icon = icon("map")),
-        menuItem("Commune profile", tabName = "profile", icon = icon("map-pin")),
-        menuItem("Donées", tabName = "data", icon = icon("database"))
-      )
+    tags$style(
+      ".commune {font-size: 36px;} .download {width: 49%; background-color: #17a2b8; color: white}"
     ),
+    
+    # Tab panel: home -----------------
+    tabPanel(
+      "Accueil",
 
-    dashboardBody(
-      tabItems(
+      br(),
+      br(),
+      br(),
 
-        ## Landing page --------------------------------------------------------
+      sidebarLayout(
+        sidebarPanel(
+          pickerInput(
+            inputId = "map_year",
+            label = "Année",
+            choices = communes %>% pull(year) %>% unique %>% na.omit,
+            selected = 2018
+          ),
 
-        tabItem(
-          tabName = "home",
-
-          bs4Card(
-            width = 12,
-            status = "navy",
-            solidHeader = TRUE,
-            
-            br(),
-            p("The World Bank recognizes institutional strengthening as key ingredient for progress of its members countries along income categories. While there are numerous diagnostic and assessment tools for specific functional areas such as public financial management and tax administration, there is no analytical tool for country-level institutional assessment."),
-            p("The Global Benchmarking Institutions Dashboard (G-BID) contributes to fill this gap by providing a standard methodology to summarize information from a large set of country-level institutional indicators."),
-            p("The dashboard provides a user-friendly interface with multiple visualizations of a country’s institutional profile based on a set of international indicators, highlighting a given country’s institutional strengths and weaknesses relative to a set of country comparators. The findings of the G-BID can provide a structured and up-to-date empirical guidance for further in-depth analysis in the specific areas of interest, given the nature of the World Bank engagement in a country and/or complementarity with other ongoing country-level diagnostics (SCDs, CEMs, CPFs and the like).")
-          )
-        ),
-
-        ## Map -----------------------------------------------------------------
-
-        tabItem(
-          tabName = "map",
-          
-          fluidRow(
-            box(
-              width = 9,
-              
-              h1(textOutput("map_title")),
-              h3(textOutput("map_year")),
-              
-              plotlyOutput(
-                "map",
-                height = "700px"
-              )
-            ),
-            
-            box(
-              width = 3,
-              
-              pickerInput(
-                inputId = "map_var",
-                label = "Indicator", 
-                choices = indicator_list
-              ),
-              
-              pickerInput(
-                inputId = "map_year",
-                label = "Year", 
-                choices = communes %>% pull(year) %>% unique
-              )
-            )
-          )
-          
-        ),
-
-        ## Commune profile ----------------------------------------------------
-
-        tabItem(
-          tabName = "profile",
-          
-          fluidRow(
-            
-            box(
-              width = 9,
-              
-              h1(textOutput("profile_title")),
-               
-              fluidRow(
-                
-                column(
-                  width = 12,
-                  h3(textOutput("line_plot_title")),
-                  h4(textOutput("line_plot_unit")),
-                  plotlyOutput("line_plot")
-                )
-                
-              ),
-              br(),
-              h3("Capacite institutionelle"),
-              
-              fluidRow(
-                tableOutput("table")
-              )
-              
-            ),
-            
-            box(
-              width = 3,
-              
-              pickerInput(
-                inputId = "profile_commune",
-                label = NULL, 
-                choices = communes %>% pull(commune),
-                selected = "Banfora"
-              ),
-              
-              pickerInput(
-                inputId = "profile_var",
-                label = "Indicator", 
-                choices = indicator_list
-              )
-            )
-          )
-        ),
-        
-        ## Data download -------------------------------------------------------
-        
-        tabItem(
-          tabName = "data",
-          
-          box(
-            width = 12,
-            
-            fluidRow(  
-              
-              column(
-                width = 4,
-                pickerInput(
-                  inputId = "data_var",
-                  label = "Indicateurs", 
-                  choices = indicator_list,
-                  selected = indicator_list,
-                  options = list(
-                    `actions-box` = TRUE), 
-                  multiple = TRUE
-                )
-              ),
-              
-              column(
-                width = 2,
-                pickerInput(
-                  inputId = "data_region",
-                  label = "Région", 
-                  choices = communes %>% pull(region) %>% unique,
-                  selected = communes %>% pull(region) %>% unique,
-                  options = list(
-                    `actions-box` = TRUE), 
-                  multiple = TRUE
-                )
-              ),
-              column(
-                width = 2,
-                pickerInput(
-                  inputId = "data_province",
-                  label = "Province", 
-                  choices = communes %>% pull(province) %>% unique,
-                  selected = communes %>% pull(province) %>% unique,
-                  options = list(
-                    `actions-box` = TRUE), 
-                  multiple = TRUE
-                )
-              ),
-              column(
-                width = 2,
-                pickerInput(
-                  inputId = "data_commune",
-                  label = "Commune", 
-                  choices = communes %>% pull(commune) %>% unique,
-                  selected = communes %>% pull(commune) %>% unique,
-                  options = list(
-                    `actions-box` = TRUE), 
-                  multiple = TRUE
-                )
-              ),
-              
-              column(
-                width = 2,
-                pickerInput(
-                  inputId = "data_year",
-                  label = "Anée", 
-                  choices = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
-                  selected = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
-                  options = list(
-                    `actions-box` = TRUE), 
-                  multiple = TRUE
-                )
-              )
+          pickerInput(
+            inputId = "map_groupe",
+            label = "Groupe d'indicateur",
+            choices = c(
+              "Capacité institutionelle",
+              "Services publics"
             )
           ),
-          
-          fluidRow(
-            box(
-              width = 12,
-              
-              dataTableOutput("data")
-            )
+
+          radioGroupButtons(
+            inputId = "map_var",
+            label = "Liste des indicateurs",
+            choices = ic,
+            direction = "vertical"
           )
+        ),
+
+        mainPanel(
+          plotlyOutput(
+            "map",
+            height = "700px"
+          ),
+          htmlOutput("map_note")
         )
       )
+    ),
+    
+    ## Commune profile ----------------------------------------------------
+    
+    tabPanel(
+      
+      "Données par commune",
+      
+      br(),
+      br(),
+      br(),
+
+      pickerInput(
+        inputId = "profile_commune",
+        choices = communes %>% pull(commune) %>% unique,
+        selected = "Banfora",
+        width = "100%",
+        options = list(
+          style = "commune",
+          `live-search` = TRUE
+        )
+      ),
+
+      fluidRow(
+        column(
+          width = 3,
+          fluidRow(valueBoxOutput("ic", width = 12)),
+          fluidRow(valueBoxOutput("sd", width = 12))
+        ),
+        column(
+          width = 9,
+          plotlyOutput(
+            "line_plot",
+            height = "250px"
+          )#,
+          #htmlOutput("plot_note")
+        )
+      ),
+
+      wellPanel(
+        width = 12,
+        dataTableOutput("table")
+      )
+
+    ),
+
+    ## Data download -------------------------------------------------------
+    
+    tabPanel(
+      "Données",
+
+      br(),
+      br(),
+      br(),
+
+      sidebarLayout(
+        
+        ### Sidebar ----------------------------------------------------------
+        sidebarPanel(
+          width = 3,
+
+          pickerInput(
+            inputId = "data_var",
+            label = "Indicateurs",
+            choices = indicator_list,
+            selected = c(ic, sd),
+            options = list(`actions-box` = TRUE),
+            multiple = TRUE
+          ),
+          
+          
+          pickerInput(
+            inputId = "data_region",
+            label = "Région",
+            choices = communes %>% arrange(region) %>% pull(region) %>% unique,
+            selected = communes %>% arrange(region) %>% pull(region) %>% unique,
+            options = list(`actions-box` = TRUE),
+            multiple = TRUE
+          ),
+          
+          pickerInput(
+            inputId = "data_province",
+            label = "Province",
+            choices = communes %>% arrange(province) %>% pull(province) %>% unique %>% na.omit,
+            selected = communes %>% arrange(province) %>% pull(province) %>% unique,
+            options = list(
+              `actions-box` = TRUE,
+              `live-search` = TRUE
+            ),
+            multiple = TRUE
+          ),
+          
+          pickerInput(
+            inputId = "data_commune",
+            label = "Commune",
+            choices = communes %>% pull(commune) %>% unique,
+            selected = communes %>% pull(commune) %>% unique,
+            options = list(
+              `actions-box` = TRUE,
+              `live-search` = TRUE
+            ),
+            multiple = TRUE
+          ),
+          
+          
+          pickerInput(
+            inputId = "data_year",
+            label = "Anée",
+            choices = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
+            selected = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
+            options = list(`actions-box` = TRUE),
+            multiple = TRUE
+          ),
+          
+          downloadButton(
+            "data_csv",
+            " CSV",
+            class = "download"
+          ),
+          
+          downloadButton(
+            "data_xls",
+            " Excel",
+            class = "download"
+          )
+        ),
+      
+      ### Main panel -----------------------------------------------------------
+        mainPanel(
+          width = 9,
+          dataTableOutput("data") 
+        )
+      )
+    ),
+    
+    ## Data download -------------------------------------------------------
+    
+    tabPanel(
+      "Indicateurs",
+      
+      br(),
+      br(),
+      br(),
+      
+      dataTableOutput("indicators")
+
     )
-  )
+    
+  ) # navbarPage
