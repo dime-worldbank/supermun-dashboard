@@ -30,7 +30,7 @@
           value = value,
           subtitle = paste("Capacité institutionelle\n(", year_max, ")"),
           icon = icon("university", lib = "font-awesome"),
-          color = "info"
+          color = "teal"
         )
       })
     
@@ -59,7 +59,7 @@
           width = 12,
           subtitle = paste("Services publics\n(", year_max, ")"),
           icon = icon("hand-holding", lib = "font-awesome"),
-          color = "info"
+          color = "teal"
         )
       })
     
