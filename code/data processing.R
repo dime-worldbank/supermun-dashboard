@@ -1,19 +1,8 @@
-# Load necessary packages ------------------------------------------------------
+install.packages("tidyverse")
+install.packages("here")
+install.packages("sf")
+install.packages("sp")
 
-# Uncomment and run the next line to install pacman in your computer
-# install.packages("pacman")
-
-packages <-
-  c(
-    "tidyverse",
-    "here",
-    "sf"
-  )
-
-pacman::p_load(
-  packages,
-  character.only = TRUE
-)
 
 ## Correspondence between map and data on commune name -------------------------
 
