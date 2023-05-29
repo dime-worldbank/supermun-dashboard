@@ -24,6 +24,8 @@ mklink /J data "C:\Users\wb501238\Dropbox\SUPERMUN dashboard\data"
   - Follow the prompts to launch the web browser and login using your Posit Connect username (not your email) and password
   - Follow the prompts to complete the connection
 
+6. Close your RStudio session and open the R project in `app/app.Rproj`.
+
 ## How to update the dashboard
 
 - To update meta data such as variable units, titles, and definitions, edit the file `documentation/SUPERMUN Indicator List.csv`
