@@ -11,11 +11,13 @@ cd user/GitHub/supermun-dashboard
 mklink /J data "C:\Users\wb501238\Dropbox\SUPERMUN dashboard\data"
 ```
 
-2. Install necessary packages: you will need to have at least `pacman` and `renv` installed in your computer for the code to run. Run [`package-installation.R`](https://github.com/dime-worldbank/supermun-dashboard/blob/main/package-installation.R) to install all necessary packages.
+2. Launch a new RStudio session by opening the file `supermun-dashboard.Rproj`
 
-3. Run `code/data processing.R` to create the final data sets used in the dashboard.
+3. Install necessary packages: you will need to have at least `pacman` and `renv` installed in your computer for the code to run. Run [`package-installation.R`](https://github.com/dime-worldbank/supermun-dashboard/blob/main/package-installation.R) to install all necessary packages.
 
-4. Login to Posit Connect (can only be done from a World Bank computer connected to the intranet)
+4. Run `code/data processing.R` to create the final data sets used in the dashboard.
+
+5. Login to Posit Connect (can only be done from a World Bank computer connected to the intranet)
   - Open RStudio and on the top left menu, navigate to Tools > Global Options > Publishing
   - Click on "Connect" and then "Posit Connect"
   - Enter the URL to the server: w0lxopshyprd1b.worldbank.org:3939 and click "Next"
