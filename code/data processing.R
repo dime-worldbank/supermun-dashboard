@@ -189,12 +189,12 @@ table %>%
 # List of indicators -----------------------------------------------------------
 ic <- 
   indicators %>%
-  filter(family == "Capacité institutionelle") %>%
+  filter(family == "Capacité institutionnelle") %>%
   pull(indicator)
 
 names(ic) <- 
   indicators %>%
-  filter(family == "Capacité institutionelle") %>%
+  filter(family == "Capacité institutionnelle") %>%
   pull(title_french)
 
 sd <- 
@@ -209,7 +209,7 @@ names(sd) <-
 
 indicator_list <-
   list(
-    "Capacité institutionelle" = ic,
+    "Capacité institutionnelle" = ic,
     "Services publics" = sd
   )
 
