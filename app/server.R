@@ -28,7 +28,7 @@
         
         valueBox(
           value = value,
-          subtitle = paste("Capacité institutionelle\n(", year_max, ")"),
+          subtitle = paste("Capacité institutionnelle\n(", year_max, ")"),
           icon = icon("university", lib = "font-awesome"),
           color = "teal"
         )
