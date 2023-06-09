@@ -4,7 +4,7 @@ ui <-
 
   navbarPage(
     
-    "Suivi des perfomances municipales",
+    "Suivi de la perfomance municipale",
     fluid = FALSE,
     id = "main",
     collapsible = T, 
@@ -38,7 +38,7 @@ ui <-
             inputId = "map_groupe",
             label = "Groupe d'indicateur",
             choices = c(
-              "Capacité institutionelle",
+              "Capacité institutionnelle",
               "Services publics"
             )
           ),
