@@ -1,8 +1,4 @@
-install.packages("tidyverse")
-install.packages("here")
-install.packages("sf")
-install.packages("sp")
-
+# Code to do data processing steps 
 
 ## Correspondence between map and data on commune name -------------------------
 
@@ -105,7 +101,7 @@ indicators <-
       "documentation",
       "SUPERMUN Indicator List.csv"
     ),
-    locale = readr::locale(encoding = "latin1")
+    locale = readr::locale(encoding = "UTF-8")
   ) %>%
   arrange(title_french) %>%
   mutate(
