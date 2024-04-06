@@ -248,7 +248,7 @@
            region %in% input$data_region,
            year %in% as.numeric(input$data_year)
          ) %>%
-         select(province, region, commune, year, all_of(input$data_var)) %>%
+         select(region, province, commune, year, all_of(input$data_var)) %>%
          mutate(
            across(
              all_of(input$data_var),
@@ -257,7 +257,7 @@
          )
        
         names(data) <-
-          c("Province", "Région", "Commune", "Année", names)
+          c("Région","Province", "Commune", "Année", names)
        
        data
      }
@@ -273,7 +273,7 @@
         escape = FALSE,
         options = list(
           sDom  = '<"top">t<"bottom">ip',
-          pageLength = 15,
+          pageLength = 17,
           autoWidth = TRUE,
           buttons = c('copy', 'csv', 'excel'),
           lengthMenu = c(10, 20, 50, 100),

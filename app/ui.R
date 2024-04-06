@@ -17,6 +17,7 @@ ui <-
       ".commune {font-size: 36px;} .download {width: 49%; background-color: #17a2b8; color: white}"
     ),
     
+    
     # Tab panel: home -----------------
     tabPanel(
       "Accueil",
@@ -135,8 +136,10 @@ ui <-
             label = "Région",
             choices = communes %>% arrange(region) %>% pull(region) %>% unique,
             selected = communes %>% arrange(region) %>% pull(region) %>% unique,
-            options = list(`actions-box` = TRUE),
-            multiple = TRUE
+            options = list(`actions-box` = TRUE, 
+                           `live-search` = TRUE),
+            multiple = TRUE, 
+            
           ),
           
           pickerInput(
@@ -169,7 +172,8 @@ ui <-
             label = "Anée",
             choices = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
             selected = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
-            options = list(`actions-box` = TRUE),
+            options = list(`actions-box` = TRUE, 
+                           `live-search` = TRUE),
             multiple = TRUE
           ),
           

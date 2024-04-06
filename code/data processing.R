@@ -61,7 +61,8 @@ communes <-
     dTolerance = 1000
   ) %>%
   left_join(join) %>%
-  select(-starts_with("NAME"))
+  select(-starts_with("NAME")) %>% 
+  select(region, everything())
 
 # SUPERMUN data ---------------------------------------------------------------
 panel <-
@@ -103,7 +104,6 @@ indicators <-
     ),
     locale = readr::locale(encoding = "UTF-8")
   ) %>%
-  arrange(title_french) %>%
   mutate(
     Indicateur = paste0(
       title_french,
