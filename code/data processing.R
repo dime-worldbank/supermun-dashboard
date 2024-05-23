@@ -255,14 +255,14 @@ quintiles <-
       mutate(
         var = get(var), 
         n_region = var %>% na.omit %>% length,
-        rank_region = rank(var)
+        rank_region = rank(var, ties.method = "first")
       ) %>%
       group_by(year) %>%
       mutate(
         quintile = ntile(var, 5),
         var = round(var, 1),
         n_country = var %>% na.omit %>% length,
-        rank_country = rank(var)
+        rank_country = rank(var, ties.method = "first")
       ) %>%
       group_by(year, quintile) %>%
       mutate(
@@ -283,7 +283,9 @@ quintiles <-
         ),
         text = ifelse(is.na(var), NA, text)
       ) %>%
-      select(year, label, text, commune)
+      arrange(year, quintile, var) %>% 
+      select(year, label,quintile, text, commune)
+    
       
   }
 

@@ -3,9 +3,11 @@ display_map <-
     
     data <-
       map_data[[input_var]] %>%
+   #   mutate(label = ifelse(is.na(label), "Non couverte", label)) %>% 
       filter(year == input_year) %>%
       right_join(map, by = "commune") %>%
-      st_as_sf
+      st_as_sf %>% 
+      arrange(quintile)
     
     title <-
       indicators %>%
@@ -17,6 +19,16 @@ display_map <-
       filter(indicator == input_var) %>%
       pull(unit_french)
     
+    label_order <- data %>%
+      distinct(quintile, label) %>%
+      arrange(quintile) %>%
+      pull(label) %>% 
+      unique()
+    
+    data$label <- factor(data$label, levels = label_order)
+    
+    # Define colors, aligned with the order of labels
+    colors <- c("#FF6961", "#FFB54C", "#F8D66D", "#8CD47E", "#7ABD7E")
     
     static_map <-
       ggplot() +
@@ -33,16 +45,7 @@ display_map <-
         title = paste0("<b>", title, " (", input_year, ")</b>")
       ) +
       theme_void() +
-      scale_fill_manual(
-        values = c(
-          "#FF6961",
-          "#FFB54C",
-          "#F8D66D",
-          "#8CD47E",
-          "#7ABD7E"
-        ),
-        na.value = "white"
-      ) +
+      scale_fill_manual(values = setNames(colors, levels(data$label))) +
       theme(
         plot.title = element_text(hjust = 0.5)
       )

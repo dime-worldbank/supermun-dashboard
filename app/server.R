@@ -316,7 +316,7 @@
         table <-
           indicators %>%
             select(family, title_french, unit_french, definition_french) %>%
-            arrange(family, title_french) %>%
+         #   arrange(family, title_french) %>%
             set_names("Groupe", "Indicateur", "Unité de mesure", "Définition") %>%
             datatable(
               rownames = FALSE,
