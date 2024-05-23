@@ -4,7 +4,7 @@ ui <-
 
   navbarPage(
     
-    "Suivi des perfomances municipales",
+    "Suivi de la Performance Municipale",
     fluid = FALSE,
     id = "main",
     collapsible = T, 
