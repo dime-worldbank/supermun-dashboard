@@ -1,5 +1,5 @@
 indicator,family,subfamily,title_french,button,unit_french,definition_french
-total_points_ic,Capacité institutionnelle,summary,Capacité institutionnelle,Capacité institutionnelle,Points,
+total_points_ic,Capacité institutionnelle,summary,Capacité institutionnelle,Capacité institutionnelle,Points,Capacité institutionnelle
 value_staffing,Capacité institutionnelle,staffing,Nombre de personnel remplissant l'organigramme type,Nombre de personnel remplissant<br>l'organigramme type,#,Nombre de personnel remplissant l'organigramme type
 value_meetings1,Capacité institutionnelle,council,Nombre de sessions ordinaires du Conseil Municipal,Nombre de sessions ordinaires du Conseil<br>Municipal,#,Nombre de sessions ordinaires du conseil municipal tenues 
 value_meetings2,Capacité institutionnelle,council,Nombre de cadres de concertation organisés par la mairie ,Nombre de cadres de concertation organisés<br>par la mairie ,#,Nombre de cadres de concertation 
@@ -7,7 +7,7 @@ value_taxes_raised,Capacité institutionnelle,finances,Recettes fiscales par hab
 value_attendance,Capacité institutionnelle,council,Taux de participation aux réunions du conseil municipal,Taux de participation aux réunions du conseil<br>municipal,%,Taux de participation aux sessions ordinaires du conseil municipal (%)
 value_taxes_forecast,Capacité institutionnelle,finances,Taux de recouvrement des taxes,Taux de recouvrement des taxes,%,Taux de recouvrement de taxes en fonction des prévisions (%)
 value_procurement,Capacité institutionnelle,procurement,Taux d'exécution du plan de passation des marchés,Taux d'exécution du plan de passation des <br>marchés,%,Taux d'exécution du plan de passation des marchés (%)
-total_points_sd,Services publics,summary,Services publics,Services publics,Points,
+total_points_sd,Services publics,summary,Services publics,Services publics,Points,Services publics
 value_school_supplies,Services publics,education,Retard moyen d'approvisionnement en fournitures scolaires,Retard moyen d'approvisionnement en fournitures<br>scolaires,Jours,Retard moyen d'approvisionnement en fournitures scolaires (Jours)
 value_school_wells,Services publics,education,Taux d'écoles avec un forage fonctionnel,Taux d'écoles avec un forage fonctionnel,%,Taux d'écoles avec une source d'eau potable fonctionnelle (%)
 value_school_latrines,Services publics,education,Taux d'écoles avec un nombre suffisant des latrines fonctionnelles,Taux d'écoles avec un nombre suffisant des <br>latrines fonctionnelles,%,Taux d'écoles avec un nombre suffisant de latrines fonctionnelles (%)
