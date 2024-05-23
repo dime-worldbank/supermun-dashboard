@@ -42,10 +42,11 @@ display_map <-
       ) +
       labs(
         fill = unit,
-        title = paste0("<b>", title, " (", input_year, ")</b>")
+        title = paste0("<b>", title, "</b>\n(", input_year, ")") 
       ) +
       theme_void() +
-      scale_fill_manual(values = setNames(colors, levels(data$label))) +
+      scale_fill_manual(values = setNames(colors, levels(data$label)), 
+                        na.value = "white") +
       theme(
         plot.title = element_text(hjust = 0.5)
       )
