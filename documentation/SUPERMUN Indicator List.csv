@@ -1,7 +1,8 @@
 indicator,family,subfamily,title_french,button,unit_french,definition_french
 total_points_ic,Capacité institutionnelle,summary,Capacité institutionnelle,Capacité institutionnelle,Points,
-value_staffing,Capacité institutionnelle,staffing,Nombre de personnel remplissant l'organigramme type,Nombre de personnel remplissant<br>l'organigramme type,#,
+value_staffing,Capacité institutionnelle,staffing,Nombre de personnel remplissant l'organigramme type,Nombre de personnel remplissant<br>l'organigramme type,#,Nombre de personnel remplissant l'organigramme type
 value_meetings1,Capacité institutionnelle,council,Nombre de sessions ordinaires du Conseil Municipal,Nombre de sessions ordinaires du Conseil<br>Municipal,#,Nombre de sessions ordinaires du conseil municipal tenues 
+value_meetings2,Capacité institutionnelle,council,Nombre de cadres de concertation organisés par la mairie ,Nombre de cadres de concertation organisés<br>par la mairie ,#,Nombre de cadres de concertation 
 value_taxes_raised,Capacité institutionnelle,finances,Recettes fiscales par habitant,Recettes fiscales par habitant,FCFA/Hbt,Recettes fiscales collectées par habitant (FCFA/Hbt)
 value_attendance,Capacité institutionnelle,council,Taux de participation aux réunions du conseil municipal,Taux de participation aux réunions du conseil<br>municipal,%,Taux de participation aux sessions ordinaires du conseil municipal (%)
 value_taxes_forecast,Capacité institutionnelle,finances,Taux de recouvrement des taxes,Taux de recouvrement des taxes,%,Taux de recouvrement de taxes en fonction des prévisions (%)
