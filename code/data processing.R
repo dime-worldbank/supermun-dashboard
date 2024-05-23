@@ -266,7 +266,7 @@ quintiles <-
       ) %>%
       group_by(year, quintile) %>%
       mutate(
-        label = paste(min(var), "-", max(var)),
+        label = paste(round(min(var),0), "-", round(max(var),0)),
         label = ifelse(is.na(var), NA, label)
       ) %>%
       ungroup %>%
