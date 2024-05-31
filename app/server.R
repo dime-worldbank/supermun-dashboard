@@ -28,7 +28,7 @@
         
         valueBox(
           value = value,
-          subtitle = paste("Capacité institutionelle\n(", year_max, ")"),
+          subtitle = paste("Capacité institutionnelle\n(", year_max, ")"),
           icon = icon("university", lib = "font-awesome"),
           color = "teal"
         )
@@ -271,13 +271,16 @@
         filter = "top",
         selection = "multiple",
         escape = FALSE,
+        extensions = 'FixedHeader', 
         options = list(
+          fixedHeader = TRUE,
           sDom  = '<"top">t<"bottom">ip',
           pageLength = 17,
           autoWidth = TRUE,
           buttons = c('copy', 'csv', 'excel'),
           lengthMenu = c(10, 20, 50, 100),
           scrollX = TRUE,
+          scrollY = TRUE,
           scroller = TRUE
         ),
         rownames = FALSE,
@@ -323,7 +326,7 @@
               filter = "top",
               selection = "multiple",
               escape = FALSE,
-              extensions = 'Buttons',
+              extensions = c('Buttons', 'FixedHeader'),
               options = list(
                 buttons = c('copy', 'csv', 'excel'),
                 dom  = 'tB',
