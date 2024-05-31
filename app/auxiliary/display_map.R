@@ -30,6 +30,11 @@ display_map <-
     # Define colors, aligned with the order of labels
     colors <- c("#FF6961", "#FFB54C", "#F8D66D", "#8CD47E", "#7ABD7E")
     
+    # Function to wrap text based on a character limit per line
+    wrap_text <- function(text, width = 40) {  # Adjust width based on your needs
+      paste(strwrap(text, width = width), collapse = "\n")
+    }
+    
     static_map <-
       ggplot() +
       geom_sf(
@@ -42,13 +47,13 @@ display_map <-
       ) +
       labs(
         fill = unit,
-        title = paste0("<b>", title, "</b>\n(", input_year, ")") 
+        title = wrap_text(paste0("<b>", title, "</b>\n(", input_year, ")"), width = 40)
       ) +
       theme_void() +
       scale_fill_manual(values = setNames(colors, levels(data$label)), 
                         na.value = "white") +
       theme(
-        plot.title = element_text(hjust = 0.5)
+        plot.title = element_text(hjust = 0.5)  
       )
     
     ggplotly(
@@ -62,12 +67,15 @@ display_map <-
         traces = seq.int(2, 349)
       ) %>%
       config(
-        modeBarButtonsToRemove = plotly_remove_buttons,
+        scrollZoom = TRUE,
+        modeBarButtonsToRemove = c("toggleSpikelines", "hoverCompareCartesian"), # Removing specific buttons
         toImageButtonOptions = list(
           filename = paste(title, "-", input_year),
           width = 1050,
           height =  675
-        )
+        ),
+        displaylogo = FALSE,
+        locale = 'fr'
       ) %>%
       layout(
         margin = list(t = 75),

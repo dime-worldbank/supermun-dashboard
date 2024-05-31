@@ -58,7 +58,11 @@ line_plot <-
     ggplotly(
       static_plot, 
       tooltip = "text"
-    )
+    ) %>% 
+      config( scrollZoom = TRUE,
+               modeBarButtonsToRemove = c("toggleSpikelines", "hoverCompareCartesian"), # Removing specific buttons
+               displaylogo = FALSE,
+                locale = 'fr')
     
   }
   
