@@ -64,6 +64,7 @@
       })
     
 ### Institutional capacity table -----------------------------------------------
+
     
   output$table <-
       renderDataTable({
@@ -76,18 +77,18 @@
               ) %>%
               select(-commune),
             rownames = FALSE,
-            options = 
-              list(
-                dom = 't',
-                rowsGroup = list(0),
-                scrollX = TRUE,
-                scrollY = TRUE,
-                pageLength = 17
-              ),
-            selection = 
-              list(
-                mode = "single"
-              )
+            filter = "top",
+            selection = "single",
+            escape = FALSE,
+            extensions = 'FixedHeader',
+            options = list(
+              buttons = c('copy', 'csv', 'excel'),
+              dom = 'Bfrtip',
+              pageLength = 18,
+              scrollX = TRUE,
+              scrollY = "550px",  # Set a specific value for scrollY instead of TRUE
+              rowsGroup = list(0)
+            )
           )
 
         table$dependencies <- 
@@ -104,6 +105,8 @@
           )
         
         table
+        
+        
         
       })
     
@@ -263,29 +266,21 @@
      }
    )
   
-  output$data <-
-      renderDataTable(
-        {
-          data()
-        },
-        filter = "top",
-        selection = "multiple",
-        escape = FALSE,
-        extensions = 'FixedHeader', 
-        options = list(
-          fixedHeader = TRUE,
-          sDom  = '<"top">t<"bottom">ip',
-          pageLength = 17,
-          autoWidth = TRUE,
-          buttons = c('copy', 'csv', 'excel'),
-          lengthMenu = c(10, 20, 50, 100),
-          scrollX = TRUE,
-          scrollY = TRUE,
-          scroller = TRUE
-        ),
-        rownames = FALSE,
-        server = FALSE
+  output$data <- renderDT({
+    datatable(
+      data(),
+      extensions = 'FixedHeader',
+      options = list(
+        fixedHeader = TRUE,
+        scrollX = TRUE,
+        scrollY = "550px",
+        pageLength = 20,
+        lengthMenu = list(c(10, 15, -1), c('10 rows', '15 rows', 'Show all')),
+        dom = 'Bfrtip',
+        buttons = c('copy', 'csv', 'excel')
       )
+    )
+  })
   
   output$data_csv <-
     downloadHandler(
@@ -326,17 +321,20 @@
               filter = "top",
               selection = "multiple",
               escape = FALSE,
-              extensions = c('Buttons', 'FixedHeader'),
+              extensions = 'FixedHeader',
               options = list(
                 buttons = c('copy', 'csv', 'excel'),
-                dom  = 'tB',
-                pageLength = 17,
-                lengthMenu = c(10, 20, 50, 100),
-                #scrollX = TRUE,
-                #scroller = TRUE,
+                dom = 'Bfrtip',
+                pageLength = 18,
+                lengthMenu = list(c(10, 15, -1), c('10 rows', '15 rows', 'Show all')),
+                scrollX = TRUE,
+                scrollY = "550px",
                 rowsGroup = list(0)
               )
             )
+      
+        
+    
         
         table$dependencies <-
           c(
