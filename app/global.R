@@ -4,7 +4,7 @@ library(tidyverse)
 library(plotly)
 library(sf)
 library(writexl)
-
+library(scales)
 library(shiny)
 library(shinyjs)
 library(shinyBS)

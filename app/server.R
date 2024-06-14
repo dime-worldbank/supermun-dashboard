@@ -234,37 +234,85 @@
         pull(total_points_ic)
     )
     
-  data <-
-   eventReactive(
-     c(input$data_commune, input$data_province, input$data_region, input$data_year, input$data_var),
-     {
-       names <-
-        indicators %>%
-        filter(indicator %in% input$data_var) %>%
-        pull(Indicateur)
-     
-       data <- 
-         communes %>%
-         filter(
-           commune %in% input$data_commune,
-           province %in% input$data_province,
-           region %in% input$data_region,
-           year %in% as.numeric(input$data_year)
-         ) %>%
-         select(region, province, commune, year, all_of(input$data_var)) %>%
-         mutate(
-           across(
-             all_of(input$data_var),
-             ~ round(., 3)
-           )
-         )
-       
-        names(data) <-
-          c("Région","Province", "Commune", "Année", names)
-       
-       data
-     }
-   )
+    # Observe changes in selected regions
+    observeEvent(input$data_region, {
+      # Filter communes and provinces based on selected regions
+      filtered_communes <- communes %>%
+        filter(region %in% input$data_region) %>%
+        arrange(commune) %>%
+        pull(commune) %>%
+        unique()
+      
+      filtered_provinces <- communes %>%
+        filter(region %in% input$data_region) %>%
+        arrange(province) %>%
+        pull(province) %>%
+        unique()
+      
+      # Update the commune picker input with filtered options
+      updatePickerInput(session, "data_commune",
+                        choices = filtered_communes,
+                        selected = filtered_communes)
+      
+      # Update the province picker input with filtered options
+      updatePickerInput(session, "data_province",
+                        choices = filtered_provinces,
+                        selected = filtered_provinces)
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
+    # Observe changes in selected regions
+    observeEvent(input$data_province, {
+      # Filter communes and provinces based on selected regions
+      filtered_communes <- communes %>%
+        filter(province %in% input$data_province) %>%
+        arrange(commune) %>%
+        pull(commune) %>%
+        unique()
+      
+      # Update the commune picker input with filtered options
+      updatePickerInput(session, "data_commune",
+                        choices = filtered_communes,
+                        selected = filtered_communes)
+      
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
+    # Reactive expression to filter data based on all inputs
+    data <-
+      eventReactive(
+        c(input$data_commune, input$data_province, input$data_region, input$data_year, input$data_var),
+        {
+          names <-
+            indicators %>%
+            filter(indicator %in% input$data_var) %>%
+            pull(Indicateur)
+          
+          data <- 
+            communes %>%
+            filter(
+              commune %in% input$data_commune,
+              province %in% input$data_province,
+              region %in% input$data_region,
+              year %in% as.numeric(input$data_year)
+            ) %>%
+            select(region, province, commune, year, all_of(input$data_var)) %>%
+            mutate(
+              across(
+                all_of(input$data_var),
+                ~ round(., 3)
+              )
+            )
+          
+          names(data) <-
+            c("Région","Province", "Commune", "Année", names)
+        
+        data
+      }
+    )
+    
+    # You can output the data to a table output or any other output element
+    output$data_table <- renderDataTable({
+      data()
+    })
   
   output$data <- renderDT({
     datatable(
