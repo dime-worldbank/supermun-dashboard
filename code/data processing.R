@@ -1,4 +1,5 @@
 # Code to do data processing steps 
+options(scipen = 999)
 
 ## Correspondence between map and data on commune name -------------------------
 
@@ -135,7 +136,20 @@ communes <-
       c(province, region, commune),
       ~ str_to_title(.)
     )
-  )
+  ) %>% 
+  filter(!is.na(year))
+
+# by region 
+
+regions_data <- communes %>% 
+  st_drop_geometry() %>% 
+  pivot_longer(c(total_points_ic:value_vaccines), 
+               names_to = "indicator", 
+               values_to = "value") %>% 
+  group_by(region, year, indicator) %>% 
+  summarise(value = mean(value, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = indicator, 
+              values_from = value)
 
 # Table to be displayed --------------------------------------------------------
 
@@ -235,6 +249,7 @@ communes <-
   communes %>%
   st_drop_geometry
 
+
 quintiles <- 
   function(var) {
     
@@ -284,7 +299,7 @@ quintiles <-
         text = ifelse(is.na(var), NA, text)
       ) %>%
       arrange(year, quintile, var) %>% 
-      select(year, label,quintile, text, commune)
+      select(year, label,quintile, text, commune, region, var)
     
       
   }
