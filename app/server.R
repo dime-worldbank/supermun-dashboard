@@ -110,33 +110,33 @@
         
       })
     
-  selected_var <-
-    eventReactive(
-      input$table_rows_selected,
-      
-      {
-        if (is.null(input$table_rows_selected)) {
-          "Capacité institutionnelle (Points)"
-        } else {
-          data_table[input$table_rows_selected, "Indicateur"] %>% unlist %>% unname
-        }
-      },
-      
-      ignoreNULL = FALSE
-    )
+    selected_var <- eventReactive(input$table_rows_selected, {
+      selected_row <- input$table_rows_selected
+      if (is.null(selected_row)) {
+        "Services publics (Points)"
+      } else {
+        selected_indicator <- data_table %>%
+          filter(commune == input$profile_commune) %>%
+          slice(selected_row) %>%
+          pull(Indicateur) %>%
+          unlist %>%
+          unname
+        print(selected_indicator)  # Debug: Print the selected indicator
+        selected_indicator
+      }
+    }, ignoreNULL = FALSE)
  
 
 ### Selected graph -------------------------------------------------------------
 
-    output$line_plot <-
-      renderPlotly({
-
-        line_plot(communes, input$profile_commune, selected_var())
-        
-      })
+  output$line_plot <- renderPlotly({
+    print(selected_var())  # Debug: Print the selected variable being used for the plot
+    line_plot(communes, input$profile_commune, selected_var())
+  })
   
   output$plot_note <-
     renderUI({
+
       HTML(
         str_wrap(
           paste(
