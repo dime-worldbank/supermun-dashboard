@@ -4,7 +4,7 @@ library(tidyverse)
 library(plotly)
 library(sf)
 library(writexl)
-
+library(scales)
 library(shiny)
 library(shinyjs)
 library(shinyBS)
@@ -89,8 +89,8 @@ indicator_list <-
     )
   )
 
-ic <- indicators %>% filter(family == "Capacité institutionelle") %>% pull(indicator)
-names(ic) <- indicators %>% filter(family == "Capacité institutionelle") %>% pull(button)
+ic <- indicators %>% filter(family == "Capacité institutionnelle") %>% pull(indicator)
+names(ic) <- indicators %>% filter(family == "Capacité institutionnelle") %>% pull(button)
 
 sd <- indicators %>% filter(family == "Services publics") %>% pull(indicator)
 names(sd) <- indicators %>% filter(family == "Services publics") %>% pull(button)

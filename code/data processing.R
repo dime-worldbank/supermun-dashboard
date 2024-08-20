@@ -1,8 +1,5 @@
-install.packages("tidyverse")
-install.packages("here")
-install.packages("sf")
-install.packages("sp")
-
+# Code to do data processing steps 
+options(scipen = 999)
 
 ## Correspondence between map and data on commune name -------------------------
 
@@ -65,7 +62,8 @@ communes <-
     dTolerance = 1000
   ) %>%
   left_join(join) %>%
-  select(-starts_with("NAME"))
+  select(-starts_with("NAME")) %>% 
+  select(region, everything())
 
 # SUPERMUN data ---------------------------------------------------------------
 panel <-
@@ -105,9 +103,8 @@ indicators <-
       "documentation",
       "SUPERMUN Indicator List.csv"
     ),
-    locale = readr::locale(encoding = "latin1")
+    locale = readr::locale(encoding = "UTF-8")
   ) %>%
-  arrange(title_french) %>%
   mutate(
     Indicateur = paste0(
       title_french,
@@ -139,7 +136,20 @@ communes <-
       c(province, region, commune),
       ~ str_to_title(.)
     )
-  )
+  ) %>% 
+  filter(!is.na(year))
+
+# by region 
+
+regions_data <- communes %>% 
+  st_drop_geometry() %>% 
+  pivot_longer(c(total_points_ic:value_vaccines), 
+               names_to = "indicator", 
+               values_to = "value") %>% 
+  group_by(region, year, indicator) %>% 
+  summarise(value = mean(value, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = indicator, 
+              values_from = value)
 
 # Table to be displayed --------------------------------------------------------
 
@@ -189,12 +199,12 @@ table %>%
 # List of indicators -----------------------------------------------------------
 ic <- 
   indicators %>%
-  filter(family == "Capacité institutionelle") %>%
+  filter(family == "Capacité institutionnelle") %>%
   pull(indicator)
 
 names(ic) <- 
   indicators %>%
-  filter(family == "Capacité institutionelle") %>%
+  filter(family == "Capacité institutionnelle") %>%
   pull(title_french)
 
 sd <- 
@@ -209,7 +219,7 @@ names(sd) <-
 
 indicator_list <-
   list(
-    "Capacité institutionelle" = ic,
+    "Capacité institutionnelle" = ic,
     "Services publics" = sd
   )
 
@@ -239,6 +249,7 @@ communes <-
   communes %>%
   st_drop_geometry
 
+
 quintiles <- 
   function(var) {
     
@@ -259,18 +270,18 @@ quintiles <-
       mutate(
         var = get(var), 
         n_region = var %>% na.omit %>% length,
-        rank_region = rank(var)
+        rank_region = rank(var, ties.method = "first")
       ) %>%
       group_by(year) %>%
       mutate(
         quintile = ntile(var, 5),
         var = round(var, 1),
         n_country = var %>% na.omit %>% length,
-        rank_country = rank(var)
+        rank_country = rank(var, ties.method = "first")
       ) %>%
       group_by(year, quintile) %>%
       mutate(
-        label = paste(min(var), "-", max(var)),
+        label = paste(round(min(var),0), "-", round(max(var),0)),
         label = ifelse(is.na(var), NA, label)
       ) %>%
       ungroup %>%
@@ -287,7 +298,9 @@ quintiles <-
         ),
         text = ifelse(is.na(var), NA, text)
       ) %>%
-      select(year, label, text, commune)
+      arrange(year, quintile, var) %>% 
+      select(year, label,quintile, text, commune, region, var)
+    
       
   }
 

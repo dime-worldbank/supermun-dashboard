@@ -4,7 +4,7 @@ ui <-
 
   navbarPage(
     
-    "Suivi des perfomances municipales",
+    "Suivi de la Performance Municipale",
     fluid = FALSE,
     id = "main",
     collapsible = T, 
@@ -16,6 +16,7 @@ ui <-
     tags$style(
       ".commune {font-size: 36px;} .download {width: 49%; background-color: #17a2b8; color: white}"
     ),
+    
     
     # Tab panel: home -----------------
     tabPanel(
@@ -38,7 +39,7 @@ ui <-
             inputId = "map_groupe",
             label = "Groupe d'indicateur",
             choices = c(
-              "Capacité institutionelle",
+              "Capacité institutionnelle",
               "Services publics"
             )
           ),
@@ -135,8 +136,10 @@ ui <-
             label = "Région",
             choices = communes %>% arrange(region) %>% pull(region) %>% unique,
             selected = communes %>% arrange(region) %>% pull(region) %>% unique,
-            options = list(`actions-box` = TRUE),
-            multiple = TRUE
+            options = list(`actions-box` = TRUE, 
+                           `live-search` = TRUE),
+            multiple = TRUE, 
+            
           ),
           
           pickerInput(
@@ -169,7 +172,8 @@ ui <-
             label = "Anée",
             choices = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
             selected = communes %>% filter(!is.na(year)) %>% pull(year) %>% unique,
-            options = list(`actions-box` = TRUE),
+            options = list(`actions-box` = TRUE, 
+                           `live-search` = TRUE),
             multiple = TRUE
           ),
           

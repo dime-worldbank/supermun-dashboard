@@ -28,7 +28,7 @@
         
         valueBox(
           value = value,
-          subtitle = paste("Capacité institutionelle\n(", year_max, ")"),
+          subtitle = paste("Capacité institutionnelle\n(", year_max, ")"),
           icon = icon("university", lib = "font-awesome"),
           color = "teal"
         )
@@ -64,6 +64,7 @@
       })
     
 ### Institutional capacity table -----------------------------------------------
+
     
   output$table <-
       renderDataTable({
@@ -76,18 +77,18 @@
               ) %>%
               select(-commune),
             rownames = FALSE,
-            options = 
-              list(
-                dom = 't',
-                rowsGroup = list(0),
-                scrollX = TRUE,
-                scrollY = TRUE,
-                pageLength = 17
-              ),
-            selection = 
-              list(
-                mode = "single"
-              )
+            filter = "top",
+            selection = "single",
+            escape = FALSE,
+            extensions = 'FixedHeader',
+            options = list(
+              buttons = c('copy', 'csv', 'excel'),
+              dom = 'Bfrtip',
+              pageLength = 18,
+              scrollX = TRUE,
+              scrollY = "550px",  # Set a specific value for scrollY instead of TRUE
+              rowsGroup = list(0)
+            )
           )
 
         table$dependencies <- 
@@ -105,35 +106,37 @@
         
         table
         
+        
+        
       })
     
-  selected_var <-
-    eventReactive(
-      input$table_rows_selected,
-      
-      {
-        if (is.null(input$table_rows_selected)) {
-          "Capacité institutionnelle (Points)"
-        } else {
-          data_table[input$table_rows_selected, "Indicateur"] %>% unlist %>% unname
-        }
-      },
-      
-      ignoreNULL = FALSE
-    )
+    selected_var <- eventReactive(input$table_rows_selected, {
+      selected_row <- input$table_rows_selected
+      if (is.null(selected_row)) {
+        "Services publics (Points)"
+      } else {
+        selected_indicator <- data_table %>%
+          filter(commune == input$profile_commune) %>%
+          slice(selected_row) %>%
+          pull(Indicateur) %>%
+          unlist %>%
+          unname
+        print(selected_indicator)  # Debug: Print the selected indicator
+        selected_indicator
+      }
+    }, ignoreNULL = FALSE)
  
 
 ### Selected graph -------------------------------------------------------------
 
-    output$line_plot <-
-      renderPlotly({
-
-        line_plot(communes, input$profile_commune, selected_var())
-        
-      })
+  output$line_plot <- renderPlotly({
+    print(selected_var())  # Debug: Print the selected variable being used for the plot
+    line_plot(communes, input$profile_commune, selected_var())
+  })
   
   output$plot_note <-
     renderUI({
+
       HTML(
         str_wrap(
           paste(
@@ -231,58 +234,101 @@
         pull(total_points_ic)
     )
     
-  data <-
-   eventReactive(
-     c(input$data_commune, input$data_province, input$data_region, input$data_year, input$data_var),
-     {
-       names <-
-        indicators %>%
-        filter(indicator %in% input$data_var) %>%
-        pull(Indicateur)
-     
-       data <- 
-         communes %>%
-         filter(
-           commune %in% input$data_commune,
-           province %in% input$data_province,
-           region %in% input$data_region,
-           year %in% as.numeric(input$data_year)
-         ) %>%
-         select(province, region, commune, year, all_of(input$data_var)) %>%
-         mutate(
-           across(
-             all_of(input$data_var),
-             ~ round(., 3)
-           )
-         )
-       
-        names(data) <-
-          c("Province", "Région", "Commune", "Année", names)
-       
-       data
-     }
-   )
-  
-  output$data <-
-      renderDataTable(
+    # Observe changes in selected regions
+    observeEvent(input$data_region, {
+      # Filter communes and provinces based on selected regions
+      filtered_communes <- communes %>%
+        filter(region %in% input$data_region) %>%
+        arrange(commune) %>%
+        pull(commune) %>%
+        unique()
+      
+      filtered_provinces <- communes %>%
+        filter(region %in% input$data_region) %>%
+        arrange(province) %>%
+        pull(province) %>%
+        unique()
+      
+      # Update the commune picker input with filtered options
+      updatePickerInput(session, "data_commune",
+                        choices = filtered_communes,
+                        selected = filtered_communes)
+      
+      # Update the province picker input with filtered options
+      updatePickerInput(session, "data_province",
+                        choices = filtered_provinces,
+                        selected = filtered_provinces)
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
+    # Observe changes in selected regions
+    observeEvent(input$data_province, {
+      # Filter communes and provinces based on selected regions
+      filtered_communes <- communes %>%
+        filter(province %in% input$data_province) %>%
+        arrange(commune) %>%
+        pull(commune) %>%
+        unique()
+      
+      # Update the commune picker input with filtered options
+      updatePickerInput(session, "data_commune",
+                        choices = filtered_communes,
+                        selected = filtered_communes)
+      
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
+    # Reactive expression to filter data based on all inputs
+    data <-
+      eventReactive(
+        c(input$data_commune, input$data_province, input$data_region, input$data_year, input$data_var),
         {
-          data()
-        },
-        filter = "top",
-        selection = "multiple",
-        escape = FALSE,
-        options = list(
-          sDom  = '<"top">t<"bottom">ip',
-          pageLength = 15,
-          autoWidth = TRUE,
-          buttons = c('copy', 'csv', 'excel'),
-          lengthMenu = c(10, 20, 50, 100),
-          scrollX = TRUE,
-          scroller = TRUE
-        ),
-        rownames = FALSE,
-        server = FALSE
+          names <-
+            indicators %>%
+            filter(indicator %in% input$data_var) %>%
+            pull(Indicateur)
+          
+          data <- 
+            communes %>%
+            filter(
+              commune %in% input$data_commune,
+              province %in% input$data_province,
+              region %in% input$data_region,
+              year %in% as.numeric(input$data_year)
+            ) %>%
+            select(region, province, commune, year, all_of(input$data_var)) %>%
+            mutate(
+              across(
+                all_of(input$data_var),
+                ~ round(., 3)
+              )
+            )
+          
+          names(data) <-
+            c("Région","Province", "Commune", "Année", names)
+        
+        data
+      }
+    )
+    
+    # You can output the data to a table output or any other output element
+    output$data_table <- renderDataTable({
+      data()
+    })
+  
+  output$data <- renderDT({
+    datatable(
+      data(),
+      extensions = 'FixedHeader',
+      options = list(
+        fixedHeader = TRUE,
+        scrollX = TRUE,
+        scrollY = "550px",
+        pageLength = 20,
+        lengthMenu = list(c(10, 15, -1), c('10 rows', '15 rows', 'Show all')),
+        dom = 'Bfrtip',
+        buttons = c('copy', 'csv', 'excel')
       )
+    )
+  })
   
   output$data_csv <-
     downloadHandler(
@@ -316,24 +362,27 @@
         table <-
           indicators %>%
             select(family, title_french, unit_french, definition_french) %>%
-            arrange(family, title_french) %>%
+         #   arrange(family, title_french) %>%
             set_names("Groupe", "Indicateur", "Unité de mesure", "Définition") %>%
             datatable(
               rownames = FALSE,
               filter = "top",
               selection = "multiple",
               escape = FALSE,
-              extensions = 'Buttons',
+              extensions = 'FixedHeader',
               options = list(
                 buttons = c('copy', 'csv', 'excel'),
-                dom  = 'tB',
-                pageLength = 17,
-                lengthMenu = c(10, 20, 50, 100),
-                #scrollX = TRUE,
-                #scroller = TRUE,
+                dom = 'Bfrtip',
+                pageLength = 18,
+                lengthMenu = list(c(10, 15, -1), c('10 rows', '15 rows', 'Show all')),
+                scrollX = TRUE,
+                scrollY = "550px",
                 rowsGroup = list(0)
               )
             )
+      
+        
+    
         
         table$dependencies <-
           c(
