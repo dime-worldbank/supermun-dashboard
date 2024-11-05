@@ -29,7 +29,7 @@ if (!require(pacman)) install.packages("pacman")
 library(pacman)
 
 # Function to load packages with an option to install
-load_packages <- function(packages, install_if_missing = FALSE) {
+load_packages <- function(packages, install_if_missing = TRUE) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE) && install_if_missing) {
       pacman::p_install(pkg, character.only = TRUE)

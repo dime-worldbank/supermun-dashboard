@@ -35,7 +35,7 @@ display_map <-
         name = "Value",
         palette = "RdYlGn",  # Red to Green palette
         direction = direction,
-        breaks = pretty_breaks(n = 5)(range(data$value, na.rm = TRUE))
+        breaks = pretty_breaks(n = 4)(range(data$value, na.rm = TRUE))
       ) +
       labs(
         title = wrap_text(paste0("<b>", title, "</b>\n(", input_year, ")"), width = 40),

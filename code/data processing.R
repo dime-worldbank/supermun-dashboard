@@ -103,7 +103,7 @@ indicators <-
       "documentation",
       "SUPERMUN Indicator List.csv"
     ),
-    locale = readr::locale(encoding = "UTF-8")
+    locale = readr::locale(encoding = "latin1")
   ) %>%
   mutate(
     Indicateur = paste0(
