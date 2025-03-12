@@ -1,39 +1,110 @@
-# SUPERMUN dashboard
+# **SUPERMUN Dashboard Setup and Deployment Guide**
 
-## Setup
+## **1. Setup**
 
-1. Copy the raw data folder from Dropbox to supermun-dasboard/data:
+### **Step 1: Copy Raw Data to the Dashboard Folder**
+Before running the dashboard, ensure that the raw data is placed in the correct location.
 
-- Option 1: manually copy and paste the files
-- Option 2: create a symbolic link by typing the following commands on the terminal (adapt the file paths to the location of GitHub and Dropbox in your computer)
-```
+#### **Option 1: Manually Copy the Files**
+- Copy the raw data folder from **Dropbox** to `supermun-dashboard/data`.
+
+#### **Option 2: Create a Symbolic Link (Recommended)**
+- Open **Terminal (Command Prompt)** and run the following command (adjust the file paths to match your setup):
+
+```sh
 cd user/GitHub/supermun-dashboard
-mklink /J data "C:\Users\wb501238\Dropbox\SUPERMUN dashboard\data"
+mklink /J data "C:\Users\wb614536\Dropbox\SUPERMUN dashboard\data"
 ```
 
-2. Launch a new RStudio session by opening the file `supermun-dashboard.Rproj`
+### **Step 2: Launch RStudio**
+- Open `supermun-dashboard.Rproj` in RStudio.
 
-3. Install necessary packages: you will need to have at least `pacman` and `renv` installed in your computer for the code to run. Run [`package-installation.R`](https://github.com/dime-worldbank/supermun-dashboard/blob/main/package-installation.R) to install all necessary packages.
+### **Step 3: Install Necessary Packages**
+- Ensure you have `pacman` and `renv` installed.
+- Run the following script to install all required packages:
 
-4. Run `code/data processing.R` to create the final data sets used in the dashboard.
+```r
+source("package-installation.R")
+```
 
-5. Login to Posit Connect (can only be done from a World Bank computer connected to the intranet)
-  - Open RStudio and on the top left menu, navigate to Tools > Global Options > Publishing
-  - Click on "Connect" and then "Posit Connect"
-  - Enter the URL to the server: w0lxopshyprd1b.worldbank.org:3939 and click "Next"
-  - Follow the prompts to launch the web browser and login using your Posit Connect username (not your email) and password
-  - Follow the prompts to complete the connection
+### **Step 4: Process Data**
+- Run the following script to generate the final datasets used in the dashboard:
 
-6. Close your RStudio session and open the R project in `app/app.Rproj`.
+```r
+source("code/data processing.R")
+```
 
-## How to update the dashboard
+### **Step 5: Login to Posit Connect** *(Only from a World Bank Computer)*
+- Open RStudio and navigate to: **Tools > Global Options > Publishing**.
+- Click on **"Connect"** and select **"Posit Connect"**.
+- Enter the server URL:  
+  
+  ```
+  https://w0lxdshyprd1c01.worldbank.org
+  ```  
+  
+- Click **Next**, follow the prompts to log in with your **Posit Connect username** (not your email), and complete the connection.
+- Restart RStudio.
 
-- To update meta data such as variable units, titles, and definitions, edit the file `documentation/SUPERMUN Indicator List.csv`
-- Whenever new data is added to `SUPERMUN panel.csv` or new metadata is added to `documentation/SUPERMUN Indicator List.csv`, run `code/data processing.R` to update the data used by the app
-- Whenever new changes are made to the code for the dashboard, they need to be pulled from GitHub to the WB machine that will be used to publish it, and then published:
-  - On GitHub Desktop, select `supermun-dashboard` under "Current repository" and `main` under "Current branch"
-  - Click on "Fetch origin" and then "Pull changes"
-  - Open `app/app.Rproj` and under the "Files" tab, click on `global.R`
-  - Click on "Run app" on the top right corner
-  - Check that all tabs in the app are rendered correctly
-  - Click on "Republish" and follow the prompts on the pop-up window
+### **Step 6: Deploy the App**
+After connecting to the server, you can deploy the app by running the following command in R:
+
+```r
+rsconnect::deployApp(appId = "replace with GUID for the app")
+```
+
+- Replace **GUID** with the one shown in your app: **Go to Info > Scroll down > GUID and copy it**.
+
+**📌 Screenshot Reference:**
+
+![Screenshot 2025-03-12 101145](https://github.com/user-attachments/assets/03488954-99cb-4978-aaa4-ece552626689)
+
+---
+
+## **2. How to Update the Dashboard**
+
+### **Updating Metadata**
+- To update metadata (variable units, titles, definitions), edit:  
+  
+  ```
+  documentation/SUPERMUN Indicator List.csv
+  ```  
+
+### **Updating Data**
+- When new data is added to `SUPERMUN panel.csv` or new metadata is updated, rerun:
+
+```r
+source("code/data processing.R")
+```
+
+### **Updating the Dashboard Code and Publishing**
+1. Open **GitHub Desktop**:
+   - Select **supermun-dashboard** under "Current repository".
+   - Select **main** under "Current branch".
+   - Click **Fetch origin**, then **Pull changes**.
+
+2. Open RStudio and navigate to:
+   - `app/app.Rproj`
+   - Open `global.R`
+   - Click **Run App** to ensure all tabs load correctly.
+
+3. **Publishing to Posit Connect:**
+   - Click **Republish**.
+   - In the pop-up window, locate the **GUID** under the **Info** tab.
+   - Run:
+
+   ```r
+   rsconnect::deployApp(appId = "replace with GUID for the app")
+   ```
+
+This ensures that you are publishing to the **correct** existing dashboard instead of creating a new one.
+
+---
+
+## **3. Notes**
+- If publishing fails, ensure you have **sufficient permissions**.
+- For troubleshooting, contact the **Posit Connect admin team**.
+
+---
+
+
